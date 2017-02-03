@@ -1,7 +1,5 @@
-library(deSolve)
-
-Qmod <- function(dt, t0, parms) {
-    with(as.list(c(dt, t0, parms)), {
+Qmod <- function(t, parms) {
+    with(as.list(c(t, parms)), {
         
         ## Dynamic Calculations ##
         
@@ -21,8 +19,8 @@ Qmod <- function(dt, t0, parms) {
         # Popsize
         N.high[dt] <- S.high[dt] + I.high[dt]
         N.low[dt] <- S.low[dt] + I.low[dt]
-        N[dt] <- N.high[dt] + N.low[dt]
-        prev[dt] <- (I.high[dt] + I.low[dt])/N[dt]
+        N[dt] <- N.high + N.low
+        prev[dt] <- (I.high + I.low)/N
         
         # Contact rates
         c.high <- (c.mean*N.tot - c.low*N.low[1])/N.high[1]
@@ -41,16 +39,12 @@ Qmod <- function(dt, t0, parms) {
         lambda.high[dt] <- rho.high * c.high * p.high
         lambda.low[dt] <- rho.low * c.low * p.low
         
-        # Birth rate - beta
-        beta.high <- brate*prop.high*N.tot
-        beta.low <- brate*prop.low*N.tot
-        
         ## Differential Equations ##
-        dS.high[dt] <- beta.high - lambda.high[dt]*S.high[dt] - muS.high*S.high[dt] 
-        dI.high[dt] <- lambda.high*S.high[dt] - muI.high*I.high[dt]
+        dS.high <- brate*prop.high*N.tot - lambda.high*S.high - muS.high*S.high 
+        dI.high <- lambda.high*S.high - muI.high*I.high
         
-        dS.low[dt] <- beta.low - lambda.low*S.low[dt] - muS.low*S.low[dt]
-        dI.low[dt] <- lambda.low*S.low[dt] - muI.low*I.low[dt]
+        dS.low <- brate*prop.low*N.tot - lambda.low*S.low - muS.low*S.low
+        dI.low <- lambda.low*S.low[dt] - muI.low*I.low
         
         
         ## Output ##
@@ -61,28 +55,3 @@ Qmod <- function(dt, t0, parms) {
         
     })
 }
-
-parms <- list(
-    N.tot <- 20000000, 
-    prop.high <- 0.02,
-    prop.low <- 0.98,
-    c.mean = 2,
-    c.low = 1.4,
-    rho.high = 0.75,
-    rho.low = 0.50,
-    brate = .02,
-    muS.high = 0.01,
-    muS.low = 0.01,
-    muI.high = 0.05,
-    muI.low = 0.05,
-    Q = 0
-)
-
-t0 <- c(
-    S.high = N.tot*prop.high - 1,
-    I.high = 1,
-    S.low = N.tot*prop.low - 1,
-    I.low = 1
-)
-dt <- seq(1, 100, 0.02)
-Qmod(parms = parms, dt = dt, t0 = t0)

@@ -1,39 +1,55 @@
-#
-# This is the server logic of a Shiny web application. You can run the 
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(shinydashboard)
 library(wesanderson)
 library(deSolve)
 source("fx.R")
 
+# https://github.com/statnet/EpiModel/blob/master/R/dcm.R
+# https://github.com/statnet/EpiModel/blob/master/R/dcm.mods.R
+# https://github.com/statnet/EpiModelResearch/blob/master/shiny/epidcmDG/ui.R
+# *******https://github.com/statnet/EpiModelResearch/blob/master/shiny/epidcmDG/server.R
+# http://desolve.r-forge.r-project.org/
+# https://www.r-bloggers.com/sir-model-of-epidemics/
+# http://rstudio-pubs-static.s3.amazonaws.com/6852_c59c5a2e8ea3456abbeb017185de603e.html
+
+
+
+
 shinyServer(function(input, output, session) {
 
-    scenarioA <- reactive({
-         runScenario(input$N.tot, input$prop.high, input$prop.low, input$c.mean, input$c.low, input$rho.high, input$rho.low,
-                     input$brate, input$muS.high, input$muS.low, input$muI.high, input$muI.low, input$Q)
-    })
-     
-     output$a_Plot <- renderPlot({
+    # Reactive parameters    
+    parms <- reactive({list(
+        
+        # Input parameters
+        N.tot <- input$N.tot, 
+        prop.high <- input$prop.high,
+        prop.low <- 1 - input$prop.high,
+        c.mean = input$c.mean,
+        c.low = input$c.low,
+        rho.high = input$rho.high,
+        rho.low = input$rho.low,
+        brate = input$brate,
+        muS.high = input$muS.high,
+        muS.low = input$muS.low,
+        muI.high = input$muI.high,
+        muI.low = input$muI.low,
+        Q = input$Q,
+  
+        # Initial starting values
+        S.high = N.tot*prop.high - 1,
+        I.high = 1,
+        S.low = N.tot*prop.low - 1,
+        I.low = 1
+    )
+
+    dt <- seq(1, 100, 0.02)
+    
+    scenarioA <- Qmod(t = dt, parms = parms, t0 = t0)
+    output$a_Plot <- renderPlot({
         par(mfrow = c(1,1), mgp = c(2,1,0))
-        plotScenario(datA = scenarioA())
+        plot(datA = scenarioA, y = "prev", xlab = "Time",
+             ylab = "Prevalence")
+         title("Prevalence of HIV")
+        })
     })
 })
-        #     output$table <- renderTable({
-#         tabScenario(datA = scenarioA(), datB = scenarioB(), quantile = input$quantile)
-#     })
-#     
-#     output$tablecaption <- renderUI({
-#         helpText("Epidemiological outcomes after", input$nyears,
-#                  "years of simulations. Reported values are simulation means with a",
-#                  paste0(input$quantile*100, "%"), "credible interval. Editing",
-#                  "inputs in the left panel and/or plot options will update the",
-#                  "table values.")
-#     })
-

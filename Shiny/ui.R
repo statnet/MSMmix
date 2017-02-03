@@ -1,12 +1,3 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(shinydashboard)
 library(wesanderson)
@@ -75,7 +66,9 @@ shinyUI(dashboardPage(
                                                                    "20%", "15%", "10%")),
                                            selectInput(inputId = "Q", label = "Assortative mixing parameter",
                                                        choices = c("26% (Paper Model)",
-                                                                   "20%", "15%", "10%"))
+                                                                   "20%", "15%", "10%")),
+                                           sliderInput(inputId = "prop.high", label = "Proportion in high-risk group",
+                                                       min = 0, max = 1, value = 0.02)
                                        )
                             )
             
