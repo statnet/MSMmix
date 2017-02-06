@@ -1,6 +1,6 @@
 library(shiny)
 library(shinydashboard)
-library(wesanderson)
+library(EpiModel)
 library(deSolve)
 source("fx.R")
 
@@ -45,6 +45,7 @@ shinyServer(function(input, output, session) {
     dt <- seq(1, 100, 0.02)
     
     scenarioA <- Qmod(t = dt, parms = parms, t0 = t0)
+    #df1 <- data.frame(ode(y=t0, times=dt, func=Qmod, parms=params, method='rk4'))
     output$a_Plot <- renderPlot({
         par(mfrow = c(1,1), mgp = c(2,1,0))
         plot(datA = scenarioA, y = "prev", xlab = "Time",

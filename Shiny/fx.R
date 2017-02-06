@@ -17,34 +17,34 @@ Qmod <- function(t, parms) {
         dI.low <- c(0)
         
         # Popsize
-        N.high[dt] <- S.high[dt] + I.high[dt]
-        N.low[dt] <- S.low[dt] + I.low[dt]
-        N[dt] <- N.high + N.low
-        prev[dt] <- (I.high + I.low)/N
+        N.high <- S.high + I.high
+        N.low <- S.low + I.low
+        N <- N.high + N.low
+        prev <- (I.high+I.low)/N
         
         # Contact rates
-        c.high <- (c.mean*N.tot - c.low*N.low[1])/N.high[1]
+        c.high <- (c.mean*N - c.low*N.low)/N.high
         
         # mixing matrix calculations based on Q
-        g.hh <- ((c.high*N.high[1]) + (Q*c.low*N.low[1])) / ((c.high*N.high[1]) + (c.low*N.low[1]))
+        g.hh <- ((c.high*N.high) + (Q*c.low*N.low)) / ((c.high*N.high) + (c.low*N.low))
         g.lh <- 1 - g.hh
-        g.hl <- (1 - g.hh) * ((c.high*N.high[1]) / (c.low*N.low[1]))
+        g.hl <- (1 - g.hh) * ((c.high*N.high) / (c.low*N.low))
         g.ll <- 1 - g.hl
         
         # prob that p is infected
-        p.high[dt] <- (g.hh*I.high/N.high[dt]) + (g.lh*I.low/N.low[dt])
-        p.low[dt] <- (g.ll*I.low/N.low[dt]) + (g.hl*I.high/N.high[dt])
+        p.high <- (g.hh*I.high/N.high)+(g.lh*I.low/N.low)
+        p.low <- (g.ll*I.low/N.low)+(g.hl*I.high/N.high)
         
         # lambda - force of infection
-        lambda.high[dt] <- rho.high * c.high * p.high
-        lambda.low[dt] <- rho.low * c.low * p.low
+        lambda.high <- rho.high * c.high * p.high
+        lambda.low <- rho.low * c.low * p.low
         
         ## Differential Equations ##
         dS.high <- brate*prop.high*N.tot - lambda.high*S.high - muS.high*S.high 
         dI.high <- lambda.high*S.high - muI.high*I.high
         
         dS.low <- brate*prop.low*N.tot - lambda.low*S.low - muS.low*S.low
-        dI.low <- lambda.low*S.low[dt] - muI.low*I.low
+        dI.low <- lambda.low*S.low - muI.low*I.low
         
         
         ## Output ##
