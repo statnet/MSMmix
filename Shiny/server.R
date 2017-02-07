@@ -6,7 +6,6 @@ shinyServer(function(input, output, session) {
 
     # Params values
     params <- reactive({
-        
         list(
         # Input parameters
         c.mean = input$c.mean / 50,
@@ -18,17 +17,20 @@ shinyServer(function(input, output, session) {
         muS.low = input$muS.low / 50,
         muI.high = input$muI.high / 50,
         muI.low = input$muI.low / 50,
-        Q = input$Q)
+        Q = input$Q
+        )
     })
     
-    t0 <- c(
-        S.high = (prop.high)*(N.tot) - 1,
+    t0 <- as.numeric(
+        S.high = (input$prop.high)*(input$N.tot) - 1,
         I.high = 1,
-        S.low = (prop.low)*(N.tot) - 1,
+        S.low = (input$prop.low)*(input$N.tot) - 1,
         I.low = 1
     )
     
     dt <- seq(1, 100, 0.02)
+    
+    
     
     ## New module
     Qmod <- function(t, t0, parms) {
