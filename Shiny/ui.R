@@ -1,11 +1,12 @@
-library(shiny)
-library(shinydashboard)
-library(deSolve)
+library("shiny")
+library("shinydashboard")
+library("deSolve")
+suppressMessages(library("EpiModel"))
 source("fx.R")
 
 # Define UI for application that draws a histogram
 shinyUI(dashboardPage(
-    dashboardHeader(title = " HIV Racial Disparities "),
+    dashboardHeader(title = "Assortative Mixing"),
     dashboardSidebar(
         width = 200,
         sidebarMenu(
@@ -41,7 +42,7 @@ shinyUI(dashboardPage(
                                            title = "Model Parameters", status = "success", solidHeader = TRUE,
                                            sliderInput(inputId = "N.tot", label = "Initial Population Size",
                                                        min = 1000000, max = 20000000, step = 1000000, value = 2000000), 
-                                           sliderInput(inputId = "brate", label = "Birth Rate (%/year)",
+                                           sliderInput(inputId = "b.rate", label = "Birth Rate (%/year)",
                                                        min = 0, max = 3, value = 0.5, step = 0.5),
                                            sliderInput(inputId = "c.low", label = "Contact rate for Group 1 (partners / year)",
                                                        min = 0, max = 30, value = 15, step = 1),

@@ -11,7 +11,7 @@ shinyServer(function(input, output) {
                   c.low = input$c.low / 50,
                   rho.high = input$rho.high,
                   rho.low = input$rho.low,
-                  brate = input$b.rate / 50,
+                  b.rate = input$b.rate / 50,
                   muS.high = input$muS.high / 50,
                   muS.low = input$muS.low / 50,
                   muI.high = input$muI.high / 50,
@@ -29,11 +29,12 @@ shinyServer(function(input, output) {
                       )
     })
     control <- reactive({
-        control.dcm(type = input$modtype,
+        control.dcm(type = "SI",
                     nsteps = 100 / 0.02,
                     dt = 0.02,
                     verbose = FALSE,
-                    odemethod = "rk4")
+                    odemethod = "rk4",
+                    new.mod = Qmod)
     })
     mod <- reactive({
         input$runMod
@@ -46,9 +47,8 @@ shinyServer(function(input, output) {
 
     output$a_Plot <- renderPlot({
         par(mfrow = c(1,1), mgp = c(2,1,0))
-        plot(datA = df, y = df$prev, type = 'l', xlab = "Time",
-             ylab = "Prevalence", lwd = 2, ylim = c(0, 1))
-         title("Prevalence of HIV")
+        plot(df, y = df$prev, type = 'l', xlab = "Time",
+             ylab = "Prevalence", lwd = 2, ylim = c(0, 1), main = "Prevalence of HIV")
         })
     })
 
