@@ -28,8 +28,8 @@ Qmod <- function(control, init, param) {
         lambda.low <- rho.low*c.low*p.low
         
         # Birth rates
-        bratehigh <- brate*prop.high
-        bratelow <- brate*prop.low
+        bratehigh <- b.rate*prop.high
+        bratelow <- b.rate*prop.low
         
         ## Differential Equations ##
         dS.high <- bratehigh*N.tot - lambda.high*S.high - muS.high*S.high 

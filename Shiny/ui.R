@@ -11,9 +11,7 @@ shinyUI(dashboardPage(
         width = 200,
         sidebarMenu(
             menuItem("Model Scenarios", tabName = "Model", icon = icon("line-chart")),
-            h3("Instructions", style = "margin-top: 0px"),
-            helpText("Click Run Model after changing model parameters",
-                     "or conditions."),
+            h4("Instructions"),
             actionButton(inputId = "runMod", "Run Model")
         )
 
