@@ -10,8 +10,7 @@ shinyUI(dashboardPage(
     dashboardSidebar(
         width = 200,
         sidebarMenu(
-            menuItem("Model Scenarios", tabName = "Model", icon = icon("line-chart"))#,
-            #h4("Instructions"),
+            menuItem("Model Scenarios", tabName = "Model", icon = icon("line-chart"))
             #box(width = NULL,
             #    actionButton(inputId = "runMod", "Run Model"))
         )
@@ -39,9 +38,9 @@ shinyUI(dashboardPage(
                         # Input parameters
                         column(width = 4,
                                box(width = NULL,
-                                        title = "Q and State Sizes", status = "success", solidHeader = TRUE,
+                                        title = "Mixing and State Sizes", status = "success", solidHeader = TRUE,
                                            
-                                        sliderInput(inputId = "Q", label = "Assortative mixing parameter",
+                                        sliderInput(inputId = "Q", label = "Assortative mixing parameter: 0 = random, 1 = completely assortative",
                                                min = 0, max = 1, value = 0.02, step = 0.01),
                                         sliderInput(inputId = "S.high", label = "Initial Group 1 Susceptibles",
                                                        min = 999, max = 9999, step = 500, value = 999), 
@@ -58,7 +57,7 @@ shinyUI(dashboardPage(
                                    
                                         sliderInput(inputId = "c.low", label = "Contact rate for Group 1 (partners / year)",
                                                        min = 0, max = 30, value = 15, step = 1),
-                                        sliderInput(inputId = "c.mean", label = "Mean contact rate (partners / year)",
+                                        sliderInput(inputId = "c.mean", label = "Mean contact rate among both groups (partners / year)",
                                                        min = 0, max = 30, value = 15, step = 1),
                                         sliderInput(inputId = "rho.high", label = "Transmission parameter for Group 1",
                                                        min = 0, max = 1, value = 0.20, step = 0.05),

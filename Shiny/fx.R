@@ -11,7 +11,7 @@ Qmod <- function(t, t0, parms) {
         prev <- (I.high + I.low)/N
         
         # Contact rates
-        c.high <- (c.mean*N - c.low*N.low)/N.high
+        c.high <- abs(c.mean*N - c.low*N.low)/N.high
         
         # mixing matrix calculations based on Q
         g.hh <- ((c.high*N.high) + (Q*c.low*N.low)) / ((c.high*N.high) + (c.low*N.low))

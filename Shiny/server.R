@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(deSolve)
+suppressMessages(library("EpiModel"))
 source("fx.R")
 
 shinyServer(function(input, output) {
@@ -47,8 +48,7 @@ shinyServer(function(input, output) {
         df <- as.data.frame(mod())
         par(mfrow = c(1,1))
         plot(df, y = "prev", type = 'l', xlab = "Time",
-             ylab = "Prevalence", lwd = 2, ylim = c(0, 1), main = "Prevalence of HIV")
-        legend("right", c(input$Q))
+             ylab = "Prevalence", lwd = 2, ylim = c(0, 1), main = "HIV Prevalence")
         })
     })
 
