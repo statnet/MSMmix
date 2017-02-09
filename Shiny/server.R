@@ -16,17 +16,15 @@ shinyServer(function(input, output) {
                   muS.low = input$muS.low / 50,
                   muI.high = input$muI.high / 50,
                   muI.low = input$muI.low / 50,
-                  Q = input$Q)
+                  Q = input$Q
+        )
     })
     
     init <- reactive({
-        init.dcm(prop.high = input$prop.high,
-                 prop.low = 1 - input$prop.high,
-                 N.tot = input$N.tot,
-                 S.high = prop.high*N.tot - 1,
-                 I.high = 1,
-                 S.low = prop.low*N.tot - 1,
-                 I.low = 1)
+        init.dcm(S.high = input$S.high,
+                 I.high = input$I.high,
+                 S.low = input$S.low,
+                 I.low = input$I.low)
     })
     
     control <- reactive({
@@ -38,18 +36,19 @@ shinyServer(function(input, output) {
                     new.mod = Qmod)
     })
     
-    mod <- reactive({
-        input$runMod
+    mod <- #reactive({
+        #input$runMod
         isolate(dcm(param(), init(), control()))
-    })
+    #})
     ## ------------------------------------------------------------------------
     # Output plot
 
     output$a_Plot <- renderPlot({
         df <- as.data.frame(mod())
-        par(mfrow = c(1,1), mgp = c(2,1,0))
-        plot(df, y = df$prev, type = 'l', xlab = "Time",
+        par(mfrow = c(1,1))
+        plot(df, y = "prev", type = 'l', xlab = "Time",
              ylab = "Prevalence", lwd = 2, ylim = c(0, 1), main = "Prevalence of HIV")
+        legend("right", c(input$Q))
         })
     })
 

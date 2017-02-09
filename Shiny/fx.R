@@ -1,6 +1,6 @@
 ## New module
-Qmod <- function(control, init, param) {
-    with(as.list(c(init, param)), {
+Qmod <- function(t, t0, parms) {
+    with(as.list(c(t0, parms)), {
         
         ## Dynamic Calculations ##
         
@@ -28,14 +28,12 @@ Qmod <- function(control, init, param) {
         lambda.low <- rho.low*c.low*p.low
         
         # Birth rates
-        bratehigh <- b.rate*prop.high
-        bratelow <- b.rate*prop.low
         
         ## Differential Equations ##
-        dS.high <- bratehigh*N.tot - lambda.high*S.high - muS.high*S.high 
+        dS.high <- b.rate*N.high - lambda.high*S.high - muS.high*S.high 
         dI.high <- lambda.high*S.high - muI.high*I.high
         
-        dS.low <- bratelow*N.tot - lambda.low*S.low - muS.low*S.low
+        dS.low <- b.rate*N.low - lambda.low*S.low - muS.low*S.low
         dI.low <- lambda.low*S.low - muI.low*I.low
         
         
