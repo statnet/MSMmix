@@ -9,7 +9,11 @@ shinyUI(dashboardPage(
     dashboardSidebar(
         width = 200,
         sidebarMenu(
-            menuItem("Model Scenarios", tabName = "Model", icon = icon("line-chart"))
+            menuItem("Model Scenarios", tabName = "Model", icon = icon("line-chart")),
+            h3("Instructions", style = "margin-top: 0px"),
+            helpText("Click Run Model after changing model parameters",
+                     "or conditions."),
+            actionButton(inputId = "runMod", "Run Model")
         )
 
 
@@ -34,7 +38,7 @@ shinyUI(dashboardPage(
                         # Input parameters
                         column(width = 2,
                                        box(width = NULL,
-                                           title = "Model Parameters" , status = "success", solidHeader = TRUE,
+                                           title = "Model Parameters", status = "success", solidHeader = TRUE,
                                            sliderInput(inputId = "N.tot", label = "Initial Population Size",
                                                        min = 1000000, max = 20000000, step = 1000000, value = 2000000), 
                                            sliderInput(inputId = "brate", label = "Birth Rate (%/year)",
@@ -52,7 +56,7 @@ shinyUI(dashboardPage(
                         
                         column(width = 2,
                                box(width = NULL,
-                                   title = "Model Parameters" , status = "success", solidHeader = TRUE,
+                                   title = "Model Parameters", status = "success", solidHeader = TRUE,
                                    sliderInput(inputId = "muS.low", label = "Death rate for low-risk group w/o Disease (% / year)",
                                                min = 0, max = 3, value = 0.5, step = 0.5),
                                    sliderInput(inputId = "muI.low", label = "Death rate for low-risk group w Disease",
