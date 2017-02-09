@@ -37,9 +37,10 @@ shinyServer(function(input, output) {
                     new.mod = Qmod)
     })
     
-    mod <- #reactive({
+    mod <- isolate(dcm(param(), init(), control()))
+    #reactive({
         #input$runMod
-        isolate(dcm(param(), init(), control()))
+        #isolate(dcm(param(), init(), control()))
     #})
     ## ------------------------------------------------------------------------
     # Output plot
