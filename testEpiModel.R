@@ -13,7 +13,7 @@ shinyServer(function(input, output, session) {
             c.low <- input$c.low / 50,
             rho.high <- input$rho.high,
             rho.low <- input$rho.low,
-            b.rate <- input$b.rate / 50,
+            brate <- input$b.rate / 50,
             muS.high <- input$muS.high / 50,
             muS.low <- input$muS.low / 50,
             muI.high <- input$muI.high / 50,

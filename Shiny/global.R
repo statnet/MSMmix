@@ -1,12 +1,4 @@
-# https://github.com/statnet/EpiModel/blob/master/R/dcm.R
-# https://github.com/statnet/EpiModel/blob/master/R/dcm.mods.R
-# https://github.com/statnet/EpiModelResearch/blob/master/shiny/epidcmDG/ui.R
-# *******https://github.com/statnet/EpiModelResearch/blob/master/shiny/epidcmDG/server.R
-# http://desolve.r-forge.r-project.org/
-# https://www.r-bloggers.com/sir-model-of-epidemics/
-# http://rstudio-pubs-static.s3.amazonaws.com/6852_c59c5a2e8ea3456abbeb017185de603e.html
-
-library(deSolve)
+## New module
 Qmod <- function(t, t0, parms) {
     with(as.list(c(t0, parms)), {
         
@@ -56,37 +48,4 @@ Qmod <- function(t, t0, parms) {
     })
 }
 
-
-params <- list(
-
-        # Input parameters
-        N.tot <- 20000,
-        prop.high <- 0.02,
-        prop.low <- 1 - prop.high,
-        c.mean <- 20 / 50,
-        c.low <- 10 / 50,
-        rho.high <- 0.5,
-        rho.low <- 0.5,
-        brate <- 0.02 / 50,
-        muS.high <- 0.01 / 50,
-        muS.low <- 0.01 / 50,
-        muI.high <- 0.02 / 50,
-        muI.low <- 0.02 / 50,
-        Q = 0.75
-        )
-
-t0 <- c(
-    S.high = (prop.high)*(N.tot) - 1,
-    I.high = 1,
-    S.low = (prop.low)*(N.tot) - 1,
-    I.low = 1
-)
-
-dt <- seq(1, 100, 0.02)
-
-df1 <- data.frame(ode(y = t0, times = dt, func = Qmod, parms = params, method = 'rk4'))
-
-
-head(df1)
-plot(df1$time, df1$prev, type='l', col = "red", lwd = 3)
-
+s

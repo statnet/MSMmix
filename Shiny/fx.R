@@ -27,11 +27,15 @@ Qmod <- function(control, init, param) {
         lambda.high <- rho.high*c.high*p.high
         lambda.low <- rho.low*c.low*p.low
         
+        # Birth rates
+        bratehigh <- brate*prop.high
+        bratelow <- brate*prop.low
+        
         ## Differential Equations ##
-        dS.high <- brate*prop.high*N.tot - lambda.high*S.high - muS.high*S.high 
+        dS.high <- bratehigh*N.tot - lambda.high*S.high - muS.high*S.high 
         dI.high <- lambda.high*S.high - muI.high*I.high
         
-        dS.low <- brate*prop.low*N.tot - lambda.low*S.low - muS.low*S.low
+        dS.low <- bratelow*N.tot - lambda.low*S.low - muS.low*S.low
         dI.low <- lambda.low*S.low - muI.low*I.low
         
         

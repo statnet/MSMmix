@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(deSolve)
+source("fx.R")
 
 # Define UI for application that draws a histogram
 shinyUI(dashboardPage(
