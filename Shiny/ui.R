@@ -4,7 +4,6 @@ library("deSolve")
 suppressMessages(library("EpiModel"))
 source("fx.R")
 library("plotly")
-library("DiagrammeR")
 
 # Define UI for application that draws a histogram
 shinyUI(dashboardPage(
