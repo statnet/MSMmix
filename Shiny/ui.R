@@ -6,84 +6,84 @@ source("fx.R")
 
 # Define UI for application that draws a histogram
 shinyUI(dashboardPage(
-    dashboardHeader(title = "Assortative Mixing"),
+    dashboardHeader(title = "Mixing DCM"),
     dashboardSidebar(
         width = 200,
         sidebarMenu(
             menuItem("Model Scenarios", tabName = "Model", icon = icon("line-chart"))
-            #box(width = NULL,
-            #    actionButton(inputId = "runMod", "Run Model"))
         )
-
     ),
     dashboardBody(
         tabItem(
-
-            ## Model Scenarios Tab ##
             tabName = "Model",
-            #
                 fluidRow(
-
-                        # Prevalence Plot
-                        column(width = 12,
-                                box(width = NULL,
-                                       title = "Assortative Mixing Plots", status = "primary", solidHeader = TRUE,
-                                       plotOutput("a_Plot", height = 500)
-                                        )
-
-                             )
+                  # Prevalence Plot
+                  column(width = 12,
+                          box(width = NULL,
+                                 title = "Results", status = "primary", solidHeader = TRUE,
+                                 plotOutput("a_Plot", height = 500)))
                 ),
                 fluidRow(
                         # Input parameters
                         column(width = 4,
-                               box(width = NULL,
-                                        title = "Mixing and State Sizes", status = "success", solidHeader = TRUE,
+                           box(width = NULL,
+                                    title = "Initial Conditions", status = "warning", solidHeader = TRUE,
 
-                                        sliderInput(inputId = "Q", label = "Assortative mixing parameter: 0 = random, 1 = completely assortative",
-                                               min = 0, max = 1, value = 0.02, step = 0.01),
-                                        sliderInput(inputId = "S.high", label = "Initial Group 1 Susceptibles",
-                                                       min = 999, max = 9999, step = 500, value = 999),
-                                        sliderInput(inputId = "I.high", label = "Initial Group 1 Infected",
-                                                       min = 1, max = 101, step = 10, value = 1),
-                                        sliderInput(inputId = "S.low", label = "Initial Group 2 Susceptibles",
-                                                       min = 999, max = 9999, step = 500, value = 999),
-                                        sliderInput(inputId = "I.low", label = "Initial Group 2 Infected",
-                                                       min = 1, max = 101, step = 10, value = 1)
-                               )),
+                                    numericInput(inputId = "S.g1", label = "Susceptible, Group 1",
+                                                 min = 0, value = 1000),
+                                    numericInput(inputId = "I.g1", label = "Infected, Group 1 ",
+                                                 min = 0, value = 1),
+                                    numericInput(inputId = "S.g2", label = "Susceptible, Group 2",
+                                                 min = 0, value = 1000),
+                                    numericInput(inputId = "I.g2", label = "Infected, Group 2",
+                                                 min = 0, value = 1)
+                           ),
+                           box(width = NULL,
+                               title = "Control Settings", status = "warning", solidHeader = TRUE,
+                               numericInput(inputId = "nsteps", label = "Time Steps",
+                                            min = 0, value = 1000),
+                               numericInput(inputId = "dt", label = "dt",
+                                            min = 0, value = 1)
+                           )
+                           ),
                         column(width = 4,
-                               box(width = NULL,
-                                        title = "Contact and Transmission", status = "success", solidHeader = TRUE,
-
-                                        sliderInput(inputId = "c.low", label = "Contact rate for Group 1 (partners / year)",
-                                                       min = 0, max = 30, value = 15, step = 1),
-                                        sliderInput(inputId = "c.mean", label = "Mean contact rate among both groups (partners / year)",
-                                                       min = 0, max = 30, value = 15, step = 1),
-                                        sliderInput(inputId = "rho.high", label = "Transmission parameter for Group 1",
-                                                       min = 0, max = 1, value = 0.20, step = 0.05),
-                                        sliderInput(inputId = "rho.low", label = "Transmission parameter for Group 2",
-                                                       min = 0, max = 1, value = 0.20, step = 0.05)
-                                       )
-                            ),
-
+                           box(width = NULL,
+                                  title = "Contact and Transmission", status = "success", solidHeader = TRUE,
+                                  sliderInput(inputId = "Q",
+                                           label = "Q Mixing Statistic (0 = proportional, 1 = assortative)",
+                                           min = 0, max = 1, value = 0, step = 0.01),
+                                  sliderInput(inputId = "c.mean",
+                                           label = "Mean Contact Rate Overall",
+                                           min = 0, max = 30, value = 4, step = 1),
+                                  sliderInput(inputId = "c.g1", label = "Contact Rate, Group 1",
+                                                 min = 0, max = 30, value = 4, step = 1),
+                                  sliderInput(inputId = "rho.g1", label = "Transmission Rate, Group 1",
+                                                 min = 0, max = 1, value = 0.20, step = 0.01),
+                                  sliderInput(inputId = "rho.g2", label = "Transmission Rate, Group 2",
+                                                 min = 0, max = 1, value = 0.20, step = 0.01)
+                           )),
                         column(width = 4,
-                                box(width = NULL,
-                                        title = "Birth and Death Rates", status = "success", solidHeader = TRUE,
+                          box(width = NULL,
+                                  title = "Demographics", status = "success", solidHeader = TRUE,
 
-                                        sliderInput(inputId = "b.rate", label = "Birth Rate (%/year)",
-                                                min = 0, max = 3, value = 0.5, step = 0.5),
-                                        sliderInput(inputId = "muS.low", label = "Death rate for low-risk group w/o Disease (% / year)",
-                                                   min = 0, max = 3, value = 0.5, step = 0.5),
-                                        sliderInput(inputId = "muI.low", label = "Death rate for low-risk group w Disease",
-                                                   min = 0, max = 3, value = 0.5, step = 0.5),
-                                        sliderInput(inputId = "muS.high", label = "Death rate for high-risk group w/o Disease",
-                                                   min = 0, max = 3, value = 0.5, step = 0.5),
-                                        sliderInput(inputId = "muI.high", label = "Death rate for high-risk group w Disease",
-                                                   min = 0, max = 3, value = 0.5, step = 0.5)
-                               )
-                        )
-                        )
-                )
-            )
+                                  sliderInput(inputId = "b.rate", label = "Birth Rate",
+                                          min = 0, max = 3, value = 0.5, step = 0.1),
+                                  sliderInput(inputId = "muS.g1",
+                                              label = "Death Rate, Susceptible, Group 1 ",
+                                             min = 0, max = 3, value = 0.5, step = 0.1),
+                                  sliderInput(inputId = "muI.g1",
+                                              label = "Death Rate, Infected, Group 1",
+                                             min = 0, max = 3, value = 0.5, step = 0.1),
+                                  sliderInput(inputId = "muS.g2",
+                                              label = "Death Rate, Susceptible, Group 2",
+                                             min = 0, max = 3, value = 0.5, step = 0.1),
+                                  sliderInput(inputId = "muI.g2",
+                                              label = "Death Rate, Infected, Group 2",
+                                               min = 0, max = 3, value = 0.5, step = 0.1)
+                         ))
+                      ) # end fluidRow
+                ) # end tabItem
+            ) # end dashboardBody
 )
 )
 

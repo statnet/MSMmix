@@ -1,47 +1,47 @@
-## New module
+
 Qmod <- function(t, t0, parms) {
     with(as.list(c(t0, parms)), {
-        
-        ## Dynamic Calculations ##
-        
-        # Popsize
-        N.high <- S.high + I.high
-        N.low <- S.low + I.low
-        N <- N.high + N.low
-        prev <- (I.high + I.low)/N
-        
-        # Contact rates
-        c.high <- abs(c.mean*N - c.low*N.low)/N.high
-        
+
+        # Dynamic calcs
+        N.g1 <- S.g1 + I.g1
+        N.g2 <- S.g2 + I.g2
+        N <- N.g1 + N.g2
+        prev <- (I.g1 + I.g2)/N
+        prev.g1 <- I.g1 / N.g1
+        prev.g2 <- I.g2 / N.g2
+
+        # Contact rates, balanced
+        c.g2 <- abs(c.mean*N - c.g1*N.g1)/N.g2
+
         # mixing matrix calculations based on Q
-        g.hh <- ((c.high*N.high) + (Q*c.low*N.low)) / ((c.high*N.high) + (c.low*N.low))
+        g.hh <- ((c.g1*N.g1) + (Q*c.g2*N.g2)) / ((c.g1*N.g1) + (c.g2*N.g2))
         g.lh <- 1 - g.hh
-        g.hl <- (1 - g.hh) * ((c.high*N.high) / (c.low*N.low))
+        g.hl <- (1 - g.hh) * ((c.g1*N.g1) / (c.g2*N.g2))
         g.ll <- 1 - g.hl
-        
+
         # prob that p is infected
-        p.high <- (g.hh*I.high/N.high) + (g.lh*I.low/N.low)
-        p.low <- (g.ll*I.low/N.low) + (g.hl*I.high/N.high)
-        
+        p.g1 <- (g.hh*I.g1/N.g1) + (g.lh*I.g2/N.g2)
+        p.g2 <- (g.ll*I.g2/N.g2) + (g.hl*I.g1/N.g1)
+
         # lambda - force of infection
-        lambda.high <- rho.high*c.high*p.high
-        lambda.low <- rho.low*c.low*p.low
-        
-        # Birth rates
-        
+        lambda.g1 <- rho.g1 * c.g1 * p.g1
+        lambda.g2 <- rho.g2 * c.g2 * p.g2
+
         ## Differential Equations ##
-        dS.high <- b.rate*N.high - lambda.high*S.high - muS.high*S.high 
-        dI.high <- lambda.high*S.high - muI.high*I.high
-        
-        dS.low <- b.rate*N.low - lambda.low*S.low - muS.low*S.low
-        dI.low <- lambda.low*S.low - muI.low*I.low
-        
-        
+        dS.g1 <- b.rate*N.g1 - lambda.g1*S.g1 - muS.g1*S.g1
+        dI.g1 <- lambda.g1*S.g1 - muI.g1*I.g1
+
+        dS.g2 <- b.rate*N.g2 - lambda.g2*S.g2 - muS.g2*S.g2
+        dI.g2 <- lambda.g2*S.g2 - muI.g2*I.g2
+
+
         ## Output ##
-        list(c(dS.high, dI.high,
-               dS.low, dI.low),
+        list(c(dS.g1, dI.g1,
+               dS.g2, dI.g2),
              N = N,
-             prev = prev)
-        
+             prev = prev,
+             prev.g1 = prev.g1,
+             prev.g2 = prev.g2)
+
     })
 }
