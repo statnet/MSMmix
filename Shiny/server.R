@@ -3,6 +3,7 @@ library(shinydashboard)
 library(deSolve)
 suppressMessages(library("EpiModel"))
 source("fx.R")
+library(plotly)
 
 shinyServer(function(input, output) {
 
@@ -41,16 +42,24 @@ shinyServer(function(input, output) {
       dcm(param(), init(), control())
     })
 
-    # Output plot
-    output$a_Plot <- renderPlot({
-        par(mfrow = c(1,2), mar = c(3,3,1,0), mgp = c(2,1,0), 
-            cex = 1.5)
-        plot(mod(), y = c("prev.g1", "prev.g2"), xlab = "Time", 
-             lwd = 3, lty = c(1,2),
-             ylab = "Prevalence", leg = "full", main = "Prevalence Plot")
-        plot(mod(), y = c("incid.g1", "incid.g2"), xlab = "Time", 
-             lwd = 3, lty = c(1,2),
-             ylab = "Prevalence", leg = "full", main = "Incidence Plot")
-        })
+    output$plot1 <- renderPlotly({
+        df <- as.data.frame(mod())
+        p1 <- plot_ly(df, x = ~time, y = ~prev.g1, name = "Group 1", type = 'scatter', mode = 'lines', 
+                     line = list(width = 2)) %>%
+            add_trace(y = ~prev.g2, name = 'Group 2', mode = 'lines', line = list(dash = "dash", width = 2)) %>%
+            layout(xaxis = list(title = "Time"),
+                   yaxis = list (title = "Proportion"))
+        p1
     })
+    output$plot2 <- renderPlotly({
+        df <- as.data.frame(mod())
+        p2 <- plot_ly(df, x = ~time, y = ~incid.g1, name = "Group 1", type = 'scatter', mode = 'lines', 
+                      line = list(width = 2)) %>%
+            add_trace(y = ~incid.g2, name = 'Group 2', mode = 'lines', line = list(dash = "dash", width = 2)) %>%
+            layout(xaxis = list(title = "Time"),
+                   yaxis = list (title = "Proportion"))
+        p2
+    })
+
+})
 

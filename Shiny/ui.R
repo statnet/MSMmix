@@ -3,6 +3,7 @@ library("shinydashboard")
 library("deSolve")
 suppressMessages(library("EpiModel"))
 source("fx.R")
+library(plotly)
 
 # Define UI for application that draws a histogram
 shinyUI(dashboardPage(
@@ -18,10 +19,14 @@ shinyUI(dashboardPage(
             tabName = "Model",
                 fluidRow(
                   # Prevalence Plot
-                  column(width = 12,
+                  column(width = 6,
                           box(width = NULL,
-                                 title = "Results", status = "primary", solidHeader = TRUE,
-                                 plotOutput("a_Plot", height = 500)))
+                                 title = "Prevalence", status = "primary", solidHeader = TRUE,
+                                 plotlyOutput("plot1"))),
+                  column(width = 6,
+                         box(width = NULL,
+                             title = "Incidence", status = "primary", solidHeader = TRUE,
+                             plotlyOutput("plot2")))
                 ),
                 fluidRow(
                         # Input parameters
@@ -43,7 +48,7 @@ shinyUI(dashboardPage(
                                numericInput(inputId = "nsteps", label = "Time Steps",
                                             min = 0, value = 500),
                                numericInput(inputId = "dt", label = "dt",
-                                            min = 0, value = 1)
+                                            min = 0, value = 0.1)
                            )
                            ),
                         column(width = 4,
