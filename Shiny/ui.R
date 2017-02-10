@@ -41,7 +41,7 @@ shinyUI(dashboardPage(
                            box(width = NULL,
                                title = "Control Settings", status = "warning", solidHeader = TRUE,
                                numericInput(inputId = "nsteps", label = "Time Steps",
-                                            min = 0, value = 1000),
+                                            min = 0, value = 500),
                                numericInput(inputId = "dt", label = "dt",
                                             min = 0, value = 1)
                            )
@@ -54,32 +54,32 @@ shinyUI(dashboardPage(
                                            min = 0, max = 1, value = 0, step = 0.01),
                                   sliderInput(inputId = "c.mean",
                                            label = "Mean Contact Rate Overall",
-                                           min = 0, max = 30, value = 4, step = 1),
+                                           min = 0, max = 10, value = 2, step = 0.1),
                                   sliderInput(inputId = "c.g1", label = "Contact Rate, Group 1",
-                                                 min = 0, max = 30, value = 4, step = 1),
+                                                 min = 0, max = 10, value = 2, step = 0.1),
                                   sliderInput(inputId = "rho.g1", label = "Transmission Rate, Group 1",
-                                                 min = 0, max = 1, value = 0.20, step = 0.01),
+                                                 min = 0, max = 1, value = 0.05, step = 0.005),
                                   sliderInput(inputId = "rho.g2", label = "Transmission Rate, Group 2",
-                                                 min = 0, max = 1, value = 0.20, step = 0.01)
+                                                 min = 0, max = 1, value = 0.05, step = 0.005)
                            )),
                         column(width = 4,
                           box(width = NULL,
                                   title = "Demographics", status = "success", solidHeader = TRUE,
 
                                   sliderInput(inputId = "b.rate", label = "Birth Rate",
-                                          min = 0, max = 3, value = 0.5, step = 0.1),
+                                          min = 0, max = 1, value = 0.1, step = 0.01),
                                   sliderInput(inputId = "muS.g1",
                                               label = "Death Rate, Susceptible, Group 1 ",
-                                             min = 0, max = 3, value = 0.5, step = 0.1),
+                                             min = 0, max = 1, value = 0.1, step = 0.01),
                                   sliderInput(inputId = "muI.g1",
                                               label = "Death Rate, Infected, Group 1",
-                                             min = 0, max = 3, value = 0.5, step = 0.1),
+                                             min = 0, max = 1, value = 0.1, step = 0.01),
                                   sliderInput(inputId = "muS.g2",
                                               label = "Death Rate, Susceptible, Group 2",
-                                             min = 0, max = 3, value = 0.5, step = 0.1),
+                                             min = 0, max = 1, value = 0.1, step = 0.01),
                                   sliderInput(inputId = "muI.g2",
                                               label = "Death Rate, Infected, Group 2",
-                                               min = 0, max = 3, value = 0.5, step = 0.1)
+                                               min = 0, max = 1, value = 0.1, step = 0.01)
                          ))
                       ) # end fluidRow
                 ) # end tabItem

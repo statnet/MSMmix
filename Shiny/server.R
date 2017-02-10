@@ -17,15 +17,16 @@ shinyServer(function(input, output) {
                   muS.g2 = input$muS.g2,
                   muI.g1 = input$muI.g1,
                   muI.g2 = input$muI.g2,
-                  Q = input$Q
-        )
+                  Q = input$Q)
     })
 
     init <- reactive({
         init.dcm(S.g1 = input$S.g1,
                  I.g1 = input$I.g1,
                  S.g2 = input$S.g2,
-                 I.g2 = input$I.g2)
+                 I.g2 = input$I.g2,
+                 incid.g1 = 0,
+                 incid.g2 = 0)
     })
 
     control <- reactive({
@@ -42,9 +43,14 @@ shinyServer(function(input, output) {
 
     # Output plot
     output$a_Plot <- renderPlot({
-        par(mfrow = c(1,1), mar = c(3,3,1,0), mgp = c(2,1,0), cex = 1.5)
-        plot(mod(), y = c("prev", "prev.g1", "prev.g2"), xlab = "Time",
-             ylab = "Prevalence", leg = "full")
+        par(mfrow = c(1,2), mar = c(3,3,1,0), mgp = c(2,1,0), 
+            cex = 1.5)
+        plot(mod(), y = c("prev.g1", "prev.g2"), xlab = "Time", 
+             lwd = 3, lty = c(1,2),
+             ylab = "Prevalence", leg = "full", main = "Prevalence Plot")
+        plot(mod(), y = c("incid.g1", "incid.g2"), xlab = "Time", 
+             lwd = 3, lty = c(1,2),
+             ylab = "Prevalence", leg = "full", main = "Incidence Plot")
         })
     })
 

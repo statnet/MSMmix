@@ -28,16 +28,18 @@ Qmod <- function(t, t0, parms) {
         lambda.g2 <- rho.g2 * c.g2 * p.g2
 
         ## Differential Equations ##
-        dS.g1 <- b.rate*N.g1 - lambda.g1*S.g1 - muS.g1*S.g1
+        dS.g1 <- 0.5*b.rate*N.g1 - lambda.g1*S.g1 - muS.g1*S.g1
         dI.g1 <- lambda.g1*S.g1 - muI.g1*I.g1
 
-        dS.g2 <- b.rate*N.g2 - lambda.g2*S.g2 - muS.g2*S.g2
+        dS.g2 <- 0.5*b.rate*N.g2 - lambda.g2*S.g2 - muS.g2*S.g2
         dI.g2 <- lambda.g2*S.g2 - muI.g2*I.g2
 
 
         ## Output ##
         list(c(dS.g1, dI.g1,
-               dS.g2, dI.g2),
+               dS.g2, dI.g2,
+               incid.g1 = lambda.g1*S.g1,
+               incid.g2 = lambda.g2*S.g2),
              N = N,
              prev = prev,
              prev.g1 = prev.g1,
