@@ -33,7 +33,23 @@ shinyUI(dashboardPage(
                                 tags$li(strong("Demographics:"), "underlying birth and death rates for the model.")
                             ),
                             p("After selecting the parameters set in each model, the model will
-                             automatically update the plots .")
+                             automatically update the plots ."),
+                            p("These are the underlying formulas for this model:"),
+                            withMathJax(),
+                            tags$div(HTML("
+                                          ")),
+                            helpText('$$\\frac{dS_{1}}{dt} = \\nu N_{1} - \\lambda_{1} S_{1} - \\mu_{S_{1}} S_{1}$$'),
+                            helpText('$$\\frac{dI_{1}}{dt} = \\lambda_{1} S_{1} - \\mu_{I_{1}} I_{1}$$'),
+                            helpText('$$\\frac{dS_{2}}{dt} = \\nu N_{2} - \\lambda_{2} S_{2} - \\mu_{S_{2}} S_{2}$$'),
+                            helpText('$$\\frac{dI_{2}}{dt} = \\lambda_{2} S_{2} - \\mu_{I_{2}} * I_{2}$$'),
+                            helpText('$$N_{1} = S_{1} + I_{1}$$'),
+                            helpText('$$N_{2} = S_{2} + I_{2}$$'),
+                            helpText('\\(\\nu\\) is the birth rate'), 
+                            helpText('\\(\\lambda_{j}\\) is the force of infection for people from group \\(t\\)'),
+                            helpText('\\(\\mu_{ij}\\) is the death rate for people of state \\(i\\) from group \\(t\\)'), 
+                            helpText('\\(N_{i}\\) is the number of people in group \\(t\\)')
+                            
+
                      )
                      
             ),
