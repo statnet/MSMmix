@@ -10,23 +10,17 @@ Qmod <- function(t, t0, parms) {
         prev.g1 <- I.g1 / N.g1
         prev.g2 <- I.g2 / N.g2
 
-        # Contact rates, balanced
-        c.g2 <- abs(c.mean*N - c.g1*N.g1)/N.g2
-
         # mixing matrix calculations based on Q
-        g.hh <- ((c.g1*N.g1) + (Q*c.g2*N.g2)) / ((c.g1*N.g1) + (c.g2*N.g2))
-        g.lh <- 1 - g.hh
-        g.hl <- (1 - g.hh) * ((c.g1*N.g1) / (c.g2*N.g2))
-        g.ll <- 1 - g.hl
-
-        # prob that p is infected
-        p.g1 <- (g.hh*I.g1/N.g1) + (g.lh*I.g2/N.g2)
-        p.g2 <- (g.ll*I.g2/N.g2) + (g.hl*I.g1/N.g1)
+        g.11 <- ((c.g1*N.g1) + (Q*c.g2*N.g2)) / ((c.g1*N.g1) + (c.g2*N.g2))
+        g.21 <- 1 - g.11
+        g.12 <- (1 - g.11) * ((c.g1*N.g1) / (c.g2*N.g2))
+        g.22 <- 1 - g.12
 
         # lambda - force of infection
-        lambda.g1 <- rho.g1 * c.g1 * p.g1
-        lambda.g2 <- rho.g2 * c.g2 * p.g2
-
+        lambda.g1 <-  rho.g1 * c.g1 * (g.11*I.g1/N.g1) + rho.g2 * c.g1 * (g.21*I.g2/N.g2)
+        lambda.g2 <-  rho.g2 * c.g2 * (g.22*I.g2/N.g2) + rho.g1 * c.g2 * (g.12*I.g1/N.g1)
+        
+        
         ## Differential Equations ##
         dS.g1 <- 0.5*b.rate*N.g1 - lambda.g1*S.g1 - muS.g1*S.g1
         dI.g1 <- lambda.g1*S.g1 - muI.g1*I.g1

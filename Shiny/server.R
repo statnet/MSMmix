@@ -9,8 +9,8 @@ shinyServer(function(input, output) {
 
     ## Main reactive functions
     param <- reactive({
-        param.dcm(c.mean = input$c.mean,
-                  c.g1 = input$c.g1,
+        param.dcm(c.g1 = input$c.g1,
+                  c.g2 = input$c.g2,
                   rho.g1 = input$rho.g1,
                   rho.g2 = input$rho.g2,
                   b.rate = input$b.rate,
@@ -22,10 +22,14 @@ shinyServer(function(input, output) {
     })
 
     init <- reactive({
-        init.dcm(S.g1 = input$S.g1,
-                 I.g1 = input$I.g1,
-                 S.g2 = input$S.g2,
-                 I.g2 = input$I.g2,
+        S.g1 <- input$Num.g1 * (1 - (input$prevalence.g1 / 100))
+        I.g1 <- input$Num.g1 * (input$prevalence.g1 / 100)
+        S.g2 <- input$Num.g2 * (1 - (input$prevalence.g2 / 100))
+        I.g2 <- input$Num.g1 * (input$prevalence.g2 / 100)
+        init.dcm(S.g1 = S.g1,
+                 I.g1 = I.g1,
+                 S.g2 = S.g2,
+                 I.g2 = I.g2,
                  incid.g1 = 0,
                  incid.g2 = 0)
     })
@@ -39,7 +43,8 @@ shinyServer(function(input, output) {
     })
 
     mod <- reactive({
-      dcm(param(), init(), control())
+        input$runMod
+        isolate(dcm(param(), init(), control()))
     })
 
     output$plot1 <- renderPlotly({
@@ -48,7 +53,7 @@ shinyServer(function(input, output) {
                      line = list(width = 2)) %>%
             add_trace(y = ~prev.g2, name = 'Group 2', mode = 'lines', line = list(dash = "dash", width = 2)) %>%
             layout(xaxis = list(title = "Time"),
-                   yaxis = list (title = "Proportion"))
+                   yaxis = list(title = "Prevalence"))
         p1
     })
     output$plot2 <- renderPlotly({
@@ -57,7 +62,7 @@ shinyServer(function(input, output) {
                       line = list(width = 2)) %>%
             add_trace(y = ~incid.g2, name = 'Group 2', mode = 'lines', line = list(dash = "dash", width = 2)) %>%
             layout(xaxis = list(title = "Time"),
-                   yaxis = list (title = "Proportion"))
+                   yaxis = list(title = "Incidence"))
         p2
     })
 
