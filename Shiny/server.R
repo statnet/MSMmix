@@ -20,12 +20,12 @@ shinyServer(function(input, output) {
                   muI.g2 = input$muI.g2,
                   Q = input$Q)
     })
-
+    
     init <- reactive({
-        S.g1 <- input$Num.g1 * (1 - (input$prevalence.g1 / 100))
-        I.g1 <- input$Num.g1 * (input$prevalence.g1 / 100)
-        S.g2 <- input$Num.g2 * (1 - (input$prevalence.g2 / 100))
-        I.g2 <- input$Num.g1 * (input$prevalence.g2 / 100)
+        S.g1 <- input$Num.g1 * (1 - input$prevalence.g1)
+        I.g1 <- input$Num.g1 * input$prevalence.g1
+        S.g2 <- input$Num.g2 * (1 - input$prevalence.g2)
+        I.g2 <- input$Num.g1 * input$prevalence.g2
         init.dcm(S.g1 = S.g1,
                  I.g1 = I.g1,
                  S.g2 = S.g2,
