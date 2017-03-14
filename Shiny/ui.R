@@ -8,287 +8,384 @@ library("plotly")
 # Define UI for application that draws a histogram
 shinyUI(dashboardPage(
     
-dashboardHeader(),
-dashboardSidebar(
-width = 180,
-sidebarMenu(
-menuItem("Introduction", tabName = "Introduction", icon = icon("book")),
-menuItem("Model Scenarios", tabName = "Model", icon = icon("line-chart"))
-)
-),
-
-dashboardBody(
-tabItems(
-
-
-# Intro Page --------------------------------------------------------------
-
-tabItem(tabName = "Introduction",
-        
-fluidRow(
-column(width = 12),
-h3("Impact of Assortative Mixing on HIV Prevalence and Incidence among MSM",
-   style = "color: #193556;", align = "Center"),
-h4("A Web-Based Modeling Tool for Public Health Practice", 
-   style = "color: #2E619E;", align = "Center"),
-hr(),
-tabBox(
-    width = 12,
-    id = "modelbox", height = "500px",
-    tabPanel("Introduction", 
-    p("The aim of this app is to demonstrate the nature of inter-group disparities in infection rates over time, 
-      for a very simple model of HIV transmission within and between two groups. Specifically, we aim to illustrate 
-      how the ability for any phenomenon to sustain a pre-existing disparity is linked to its ability to generate 
-      a disparity when none exists. Examples of the kinds of phenomena we mean are differences in care access 
-      (and thus in infectiousness per contact and/or mortality rates), differences in contact rates, differences 
-      in access to and use of prevention modalities like condoms (and thus in effective contact rates), and 
-      assortative mixing between the two groups. Before exploring scenarios, readers are encouraged to review 
-      the", strong("Context,"), strong("Model Structure"), "and", strong("Detailed Instructions"), "tabs. See also the", strong("Discussion"), 
-      "tab after exploring the app.")),
+    dashboardHeader(),
+    dashboardSidebar(
+        width = 180,
+        sidebarMenu(
+            menuItem("Introduction", tabName = "Introduction", icon = icon("book")),
+            menuItem("Context", tabName = "Context", icon = icon("book")),
+            menuItem("Model Structure", tabName = "ModelStructure", icon = icon("book")),
+            menuItem("Detailed Instructions", tabName = "DetailedInstructions", icon = icon("book")),
+            menuItem("Discussion", tabName = "Discussion", icon = icon("book")),
+            menuItem("Equations", tabName = "Equations", icon = icon("cog")),
+            menuItem("Model Scenarios", tabName = "Model", icon = icon("line-chart"))
+        )
+    ),
     
-    tabPanel("Context",
-            p("This app was initially developed in concert with the article", em("Isolating the sources of racial disparities 
-            in HIV prevalence among men who have sex with men (MSM) in Atlanta, GA: A modeling study."), "However, it is not 
-                                         a re-creation of the complex model in that article, but rather a simple model aimed at illustrating a general point 
-                                         about the nature of infectious disease dynamics."),
-             p("This point pertains to the relationship between how disparities in infection burden between two groups are generated,
-               and how pre-existing disparities are sustained. That is, if we know that a given disparity between groups in some 
-               causal factor (e.g. sexual behavior, care continuum) generates a given disparity in HIV incidence or prevalence, 
-               what does that tell us about the ability for that same causal factor to sustain a pre-existing disparity in incidence
-               and prevalence over time? Epidemic modeling theory makes predictions about this relationship that, in our experience,
-               many people find counter-intuitive. In making this tool, we are motivated by the fact that existing differences 
-               in HIV prevalence by race are used in the literature as explanatory factors for differences in HIV incidence. 
-               This argument states that, given high levels of race assortative mixing, and higher standing prevalence among 
-               Black MSM than White MSM, an individual HIV-negative Black MSM is more likely than an individual HIV-negative 
-               White MSM to have HIV-positive partners, and thus to acquire HIV infection. Indeed, partner race is a strong 
-               explanatory factor in incidence studies (e.g., Garofalo et al. 2016, Sullivan et al. 2016). If a pre-existing 
-               disparity plus assortative mixing together can explain short-term differences in HIV incidence, then it would 
-               likely seem reasonable for many readers of this literature to imagine that the same phenomena might be sufficient 
-               to sustain disparities indefinitely and thus provide the explanation for long-term disparities."),
-             p("However, modeling theory suggests that the short-term explanatory power of a pre-existing disparity combined with 
-               assortative mixing does not generally translate into long-term explanatory power (e.g. Simon and Jacquez 1992). This 
-               theory involves complex mathematics such as Lyapunov functions, which makes it accessible only to a relatively small audience."),
-             p("In order for a pre-existing disparity to be maintained, something other than just assortative mixing must be at work – e.g. 
-               higher average infectiousness per serodiscordant contact for one group than the other. If something like this is in effect, 
-               then assortative mixing can help to amplify the size of the disparity that it can maintain."),
-             p("We have developed this app to provide a broader audience with the tools to explore this theory in practice, and develop 
-               intuition around how it works and what its implications are for understanding both short- and long-term disparities in HIV 
-               and other infectious diseases."),
-            tags$ul(
-                tags$li("Garofalo R., Hotton AL, Kuhns LM, Gratzer B, Mustanski B. (2016). Incidence of HIV infection and Sexually Transmitted Infections 
-        and Related Risk Factors among Very Young Men Who Have Sex with Men. J Acquir Immune Defic Syndr, 72(1):79-86. doi:10.1097/QAI.0000000000000933)"),
-                tags$li("Simon CP, Jacquez JA (1992). Reproduction Numbers and the Stability of Equilibria of SI Models for Heterogeneous Populations. 
-        SIAM Journal on Applied Mathematics, 52(2), 541-576."), 
-                tags$li("Sullivan PS, Rosenberg ES, Sanchez TH, Kelley CF, Luisi N, Cooper HL, Diclemente RJ, Wingood GM, Frew PM, Salazar LF, 
-        Del Rio C, Mulligan MJ, Peterson JL. (2015). Explaining racial disparities in HIV incidence in black and white men 
-        who have sex with men in Atlanta, GA: a prospective observational cohort study. Ann Epidemiol, 25(6), 445-454. doi:10.1016/j.annepidem.2015.03.006."))),
-    
-    tabPanel("Model Structure", 
-             p("The model simulates a population comprising two groups, named Group 1 and Group 2. In addition to their group identity, individuals 
-in the population are also distinguished by infection status: they are either susceptible or infected. There is no recovery. Thus, 
-everyone in the population falls into one of four categories at any point on time, based on their two attributes (group identity, infection status)."),
-             p("The Initial Conditions determine the size of each of these four categories at the beginning of the simulation."),
-             p("Over time, people enter the population (“birth”), leave the population (“death”), and transition from susceptible to infected.  
-The first two of these are controlled by parameters in the Demographics section of the app.  There is one overall birth rate, 
-and a separately controllable death rate for each of the four categories. New arrivals are all uninfected, and are split 
-between the two groups according to the initial sizes of these groups."),
-             p("Transmission is modeled as a two-step process: first individuals form contacts with one another, and then, if the contact involves a discordant pair
-(one susceptible and one infected), transmission may occur. The process of forming contacts is shaped by three parameters:"),
-             tags$ul(
-                 tags$li("one determining the Group 1 rate, which determines how many contacts people in Group 1 have overall, regardless of who the contacts are with"),
-                 tags$li("one determining the Group 2 rate, which determines how many contacts people in Group 2 have overall, regardless of who the contacts are with"),
-                 tags$li("a mixing statistic, which determines the level of assortative mixing between the two groups. When this statistic is at its minimum value of 0, 
-    the two groups mix randomly – that is, although the pool of people having contacts may differ in size for each group (depending on group sizes 
-    and group-specific contact rates), once people are in the pool they pair up with others in the pool without considering group.  At the other 
-    extreme, when this statistic is at its minimum value of 1, the groups are completely assortative – all contacts are within-group.")
-             ),
-             p(em("Technical note: The model is structured as a compartmental model using ordinary differential equations. Although this is not an individual-based model, 
- we frame the above description using concepts such as individual actors and individual contacts for the sake of clarity and intuitiveness for a general audience."))),
-    
-    tabPanel("Detailed Instructions",
-    p("Users can explore the model in different ways, but here we present a method that highlights the behavior we originally developed the tool to show."),
-    p("The model contains four initial conditions (upper left panel), two control parameters (lower left panel), three parameters controlling contacts (central panel), 
-two parameters controlling transmission (central panel), and five controlling demographics (right panel)."),
-    p("Begin by examining the default parameter values and the resulting epidemic.  In this case, everything about the two groups is exactly the same 
-(e.g. group size, initial prevalence, death rates, transmission rates). Not surprisingly, then, the epidemic trajectory that each group takes over 
-time is exactly the same: they both head to an equilibrium value of 50% prevalence."),
-    p("Try changing the mixing statistic to a higher value, i.e. making a higher proportion of the contacts occur between two people in the same group.
-No matter what value you change this to, the trajectories remain the same, since both groups have the exact same behaviors, demography and transmission rates."),
-    p("Now, change the initial prevalence levels for one or both groups. (The only value you should *not* change either initial prevalence level to at 
-this point is 0 – choose anything else). This represents a case where there is some form of pre-existing disparity resulting from some previous 
-unmeasured cause.  But now the two groups are the same in every way except for standing prevalence, plus there is a tendency"),
-    p("Try ramping assortative mixing all the way up to 1 – that is, the two groups are completely isolated from one another. Nevertheless, even though they 
-start at different levels of prevalence, they still converge.  In the presence of a pre-existing disparity, assortative mixing alone has no ability to 
-maintain that disparity. Although it may take a long time to fully achieve equilibrium, the incidence values in particular typically begin to move noticeably 
-in the direction of their equilibrium quite quickly."),
-    p("Return all model parameters to their default values.  You can do this by reloading the page in your web browser. Now, try doubling the transmission rate 
-for Group 2 so that it equals 0.10. This represents the probability that an infected person in Group 2 will transmit to their contact. For HIV, one might 
-imagine this to represent a case where persons in Group 2 are less likely to be virally suppressed.  (Given that, if you want to you can also increase the 
-death rate for infected persons in Group 2). Observe and record the prevalence level for each group that this model heads towards."),
-    p("Now, keeping everything else the same, once again change the initial prevalence levels for one or both groups.Notice that the prevalence and incidence values 
-that the two models head towards do not change. The trajectories that the populations take to get there have changed because the starting points have changed – 
-but the place they head to has not.  And once again the incidence values typically begin to move in the direction of their new equilibrium right away."),
-    p("Now try changing the mixing statistic again and see there is a new equilibrium.  And again try changing the initial prevalence levels (to anything except 0) 
-and see that this does not change the equilibrium."),
-    p("As you continue to explore, you might finally wish to change one or more initial prevalence values to 0. If you do, you may discover that there are only two 
-exceptions to the rule that a given set of parameters will always head to the same pair of group-specific prevalence values regardless of where prevalence begins.
-One is when both groups are given an initial prevalence of 0 – in this case, the epidemic can never take off at all since in our model everyone who enters the 
-population after the initial setup is uninfected.  The other case is when one group has an initial prevalence of 0 and the mixing parameter is at 1.  Here the 
-two groups are completely isolated, and the group with no infection can never see an epidemic.  Of course, in reality, when two groups co-exist within the same 
-larger community, they are rarely 100% percent assortative without exception.")),
+    dashboardBody(
+        tabItems(
+            
+            
+            # Intro Page --------------------------------------------------------------
+            
+            tabItem(tabName = "Introduction",
+                    
+                    fluidRow(
+                        column(width = 1),
+                        column(width = 10,
+                               h3("Impact of Assortative Mixing on HIV Prevalence and Incidence among MSM",
+                                  style = "color: #193556;", align = "Center"),
+                               h4("A Web-Based Modeling Tool for Public Health Practice", 
+                                  style = "color: #2E619E;", align = "Center"),
+                               hr(),
+                               p("The aim of this app is to demonstrate the nature of inter-group disparities in infection rates over time, 
+                                 for a very simple model of HIV transmission within and between two groups. Specifically, we aim to illustrate 
+                                 how the ability for any phenomenon to sustain a pre-existing disparity is linked to its ability to generate 
+                                 a disparity when none exists. Examples of the kinds of phenomena we mean are differences in care access 
+                                 (and thus in infectiousness per contact and/or mortality rates), differences in contact rates, differences 
+                                 in access to and use of prevention modalities like condoms (and thus in effective contact rates), and 
+                                 assortative mixing between the two groups. Before exploring scenarios, readers are encouraged to review 
+                                 the", strong("Context,"), strong("Model Structure"), "and", strong("Detailed Instructions"), "tabs. See also the", strong("Discussion"), 
+                                 "tab after exploring the app.")),
+                        column(width = 1)
+                    )
+                        ), #End tabItem
+            
+            tabItem(
+                
+                tabName = "Context",
+                fluidRow(
+                    column(width = 1),
+                    column(width = 10,
+                    h3("Context", style = "color: #2E619E;", align = "Center"),
+                    hr(),
+                           p("This app was initially developed in concert with the article,", 
+                             em("Isolating the sources of racial disparities in HIV prevalence among men who have sex with men (MSM) in Atlanta, GA: A modeling study."),
+                             "However, it is not 
+                             a re-creation of the complex model in that article, but rather a simple model aimed at illustrating a general point 
+                             about the nature of infectious disease dynamics."),
+                           
+                           p("This point pertains to the relationship between how disparities in infection burden between two groups are generated,
+                             and how pre-existing disparities are sustained. That is, if we know that a given disparity between groups in some 
+                             causal factor (e.g. sexual behavior, care continuum) generates a given disparity in HIV incidence or prevalence, 
+                             what does that tell us about the ability for that same causal factor to sustain a pre-existing disparity in incidence
+                             and prevalence over time? Epidemic modeling theory makes predictions about this relationship that, in our experience,
+                             many people find counter-intuitive. In making this tool, we are motivated by the fact that existing differences 
+                             in HIV prevalence by race are used in the literature as explanatory factors for differences in HIV incidence. 
+                             This argument states that, given high levels of race assortative mixing, and higher standing prevalence among 
+                             Black MSM than White MSM, an individual HIV-negative Black MSM is more likely than an individual HIV-negative 
+                             White MSM to have HIV-positive partners, and thus to acquire HIV infection. Indeed, partner race is a strong 
+                             explanatory factor in incidence studies (e.g., Garofalo et al. 2016, Sullivan et al. 2016). If a pre-existing 
+                             disparity plus assortative mixing together can explain short-term differences in HIV incidence, then it would 
+                             likely seem reasonable for many readers of this literature to imagine that the same phenomena might be sufficient 
+                             to sustain disparities indefinitely and thus provide the explanation for long-term disparities."),
+                           
+                           p("However, modeling theory suggests that the short-term explanatory power of a pre-existing disparity combined with 
+                             assortative mixing does not generally translate into long-term explanatory power (e.g. Simon and Jacquez 1992). This 
+                             theory involves complex mathematics such as Lyapunov functions, which makes it accessible only to a relatively small audience."),
+                           
+                           p("In order for a pre-existing disparity to be maintained, something other than just assortative mixing must be at work – e.g. 
+                             higher average infectiousness per serodiscordant contact for one group than the other. If something like this is in effect, 
+                             then assortative mixing can help to amplify the size of the disparity that it can maintain."),
+                           
+                           p("We have developed this app to provide a broader audience with the tools to explore this theory in practice, and develop 
+                             intuition around how it works and what its implications are for understanding both short- and long-term disparities in HIV 
+                             and other infectious diseases."),
+                           
+                           tags$ul(
+                               tags$li("Garofalo R., Hotton AL, Kuhns LM, Gratzer B, Mustanski B. (2016). Incidence of HIV infection and Sexually Transmitted Infections 
+                                       and Related Risk Factors among Very Young Men Who Have Sex with Men. J Acquir Immune Defic Syndr, 72(1):79-86. doi:10.1097/QAI.0000000000000933)"),
+                               tags$li("Simon CP, Jacquez JA (1992). Reproduction Numbers and the Stability of Equilibria of SI Models for Heterogeneous Populations. 
+                                       SIAM Journal on Applied Mathematics, 52(2), 541-576."), 
+                               tags$li("Sullivan PS, Rosenberg ES, Sanchez TH, Kelley CF, Luisi N, Cooper HL, Diclemente RJ, Wingood GM, Frew PM, Salazar LF, 
+                                       Del Rio C, Mulligan MJ, Peterson JL. (2015). Explaining racial disparities in HIV incidence in black and white men 
+                                       who have sex with men in Atlanta, GA: a prospective observational cohort study. Ann Epidemiol, 25(6), 445-454. doi:10.1016/j.annepidem.2015.03.006."))
+                               ), # End column
+                    column(width = 1)
+                               ) # End fluidRow
+                           ), #End tabItem
+            
+            tabItem(
+                
+                tabName = "ModelStructure", 
+                fluidRow(
+                column(width = 1),
+                column(width = 10,
+                h3("Model Structure", style = "color: #2E619E;", align = "Center"),
+                hr(),
+                p("The model simulates a population comprising two groups, named Group 1 and Group 2. In addition to their group identity, individuals 
+                  in the population are also distinguished by infection status: they are either susceptible or infected. There is no recovery. Thus, 
+                  everyone in the population falls into one of four categories at any point on time, based on their two attributes (group identity, infection status)."),
+                
+                p("The Initial Conditions determine the size of each of these four categories at the beginning of the simulation."),
+                
+                p("Over time, people enter the population (“birth”), leave the population (“death”), and transition from susceptible to infected.  
+                  The first two of these are controlled by parameters in the Demographics section of the app.  There is one overall birth rate, 
+                  and a separately controllable death rate for each of the four categories. New arrivals are all uninfected, and are split 
+                  between the two groups according to the initial sizes of these groups."),
+                
+                p("Transmission is modeled as a two-step process: first individuals form contacts with one another, and then, if the contact involves a discordant pair
+                  (one susceptible and one infected), transmission may occur. The process of forming contacts is shaped by three parameters:"),
+                
+                tags$ul(
+                    tags$li("one determining the Group 1 rate, which determines how many contacts people in Group 1 have overall, regardless of who the contacts are with"),
+                    tags$li("one determining the Group 2 rate, which determines how many contacts people in Group 2 have overall, regardless of who the contacts are with"),
+                    tags$li("a mixing statistic, which determines the level of assortative mixing between the two groups. When this statistic is at its minimum value of 0, 
+                            the two groups mix randomly – that is, although the pool of people having contacts may differ in size for each group (depending on group sizes 
+                            and group-specific contact rates), once people are in the pool they pair up with others in the pool without considering group.  At the other 
+                            extreme, when this statistic is at its minimum value of 1, the groups are completely assortative – all contacts are within-group.")
+                    ),
+                
+                p(em("Technical note: The model is structured as a compartmental model using ordinary differential equations. Although this is not an individual-based model, 
+                     we frame the above description using concepts such as individual actors and individual contacts for the sake of clarity and intuitiveness for a general audience."))
+                ), #end column
+                column(width = 1)
+            ) # End fluidRow
+            ), # End tabItem
+            
+            tabItem(
 
-    tabPanel("Discussion",
-         p("We have used a relatively simple model of an infectious disease with two groups to help people build intuition around a seemingly counterintuitive fact: that, 
-in the presence of a pre-existing disparity in infection burden between two groups, assortative mixing between the groups on its own cannot sustain that disparity
-in the long term.  Although initial incidence will different between the two groups, these values begin to converge immediately, and both incidence and prevalence
-will eventually converge across the two groups completely."),
-         p("Differences between groups such as infectiousness (perhaps because of different levels of viral suppression), or contact rates, or mortality (also because of 
-different levels of viral suppression) can create sustainable disparities.  And assortative mixing can accentuate the resulting disparity in these cases.  
-But even here, the ultimate size of the disparity does not depend on what level of disparity one begins the model at. The only exception is the very extreme 
-case involving initial prevalence rates of 0."),
-         p("The principle that these tools demonstrate is not new.  Indeed, it was proven mathematically by Simon and Jacquez (1992) for the case of two groups, for 
-certain types of diseases that share many features of HIV. In doing this work, they were building on a deep literature on the mathematical theory of epidemics. 
-However, their proof, and many other ones throughout that literature, involve highly complex mathematics that make them inaccessible to many practitioners.  
-Hence our desire to demonstrate the principle using a more user-friendly tool."),
-         p("We provide two caveats.  One is that in many cases it may take a long time to fully achieve equilibrium (even on the order of 100 years, far longer than the 
-HIV epidemic has existed). Readers who want to understand how existing disparities are being maintained might argue that, since we have only so far observed 
-those disparities over a few decades, that it may still be assortative mixing on its own that drives most of the continuing disparity that we see. However, 
-even though prevalence in models may take a long time to fully converge, the measurable convergence of incidence and prevalence levels between groups in the 
-direction of that equilibrium occurs immediately. Thus, if past unmeasured factors generated a racial disparity in HIV between Black and White MSM, and current 
-measured factors reflect any kind of change from those past unmeasured ones, we should expect to see HIV incidence and prevalence moving in the direction 
-sustainable by the new factors rapidly. In practice, however, this does not appear to be happening."),
-         p("Our second caveat is that, in the real world, the values behind the various parameters we consider are changing all the time.  And, related to this, 
-each parameter represents the complex outcome of multiple phenomena, averaged across a very heterogeneous group of people.  In other words, our model 
-is a simplification of the real world.  This is on purpose, to help gain intuition.  None of this negates the central finding, that assortative mixing 
-on its own cannot sustain a pre-existing disparity."),
-         p("Users may wonder how it is that their intuition about this is wrong.  To repeat one version of that intuition: if Black MSM currently have higher 
-HIV prevalence than White MSM, and there is high assortative mixing, then any individual HIV-negative Black MSM is more likely to have a positive 
-partner than any individual HIV-negative White MSM.  If the two groups are identical in every other way, then that individual HIV-negative Black MSM 
-should be more likely to become infected than his White counterpart.  All of this is indeed true.  However, where the intuition breaks down is in the
-next step, where people assume that this means higher numbers of new infections for Black MSM indefinitely.  This is because, in order to calculate new 
-incident cases, the probability that any individual HIV-negative person in a group becomes infected must be multiplied by the number of HIV-negative 
-persons in that group.  And, given the higher prevalence among Black MSM, that number is lower for them than for White MSM. Incidence is a complex 
-interaction of both the size of the HIV-positive population and the size of the HIV-negative population, and those two numbers must by definition 
-add up to 100% of the population for any group.  Our intuition tends to focus on the size of only one group or the other."),
-         tags$ul(
-             tags$li("Simon CP, Jacquez JA (1992). Reproduction Numbers and the Stability of Equilibria of SI Models for Heterogeneous Populations. SIAM Journal on Applied Mathematics, 52(2), 541-576.")
-         )),
-    tabPanel("Equations",
-             p("These are the differential equations for the model:"),
-             
-             withMathJax(),
-             tags$div(HTML("")),
-             helpText('$$\\frac{dS_{1}}{dt} = \\nu N_{1} - \\lambda_{1} S_{1} - \\mu_{S_{1}} S_{1}$$'),
-             helpText('$$\\frac{dI_{1}}{dt} = \\lambda_{1} S_{1} - \\mu_{I_{1}} I_{1}$$'),
-             helpText('$$\\frac{dS_{2}}{dt} = \\nu N_{2} - \\lambda_{2} S_{2} - \\mu_{S_{2}} S_{2}$$'),
-             helpText('$$\\frac{dI_{2}}{dt} = \\lambda_{2} S_{2} - \\mu_{I_{2}} I_{2}$$'),
-             helpText('$$N_{1} = S_{1} + I_{1}$$'),
-             helpText('$$N_{2} = S_{2} + I_{2}$$'),
-             helpText('\\(I_{j}\\) is number of people of state \\(I\\) from group \\(j\\)'), 
-             helpText('\\(\\nu\\) is the birth rate'), 
-             helpText('\\(\\lambda_{j}\\) is the force of infection for people from group \\(j\\)'),
-             helpText('\\(\\mu_{ij}\\) is the death rate for people of state \\(I\\) from group \\(j\\)'), 
-             helpText('\\(N_{i}\\) is the number of people in group \\(j\\)'))
-) #end tabBox
-) #fluidRow
-), #end tabItem
-
-# Model Scenarios Page --------------------------------------------------------------
-tabItem(
-tabName = "Model",
-
-## Plot windows
-
-fluidRow(
-column(width = 12),
-box(width = 12,
-    title = "Quick Start", status = "warning", solidHeader = TRUE,
-    p("Select values for all of the model input parameters, either by accepting 
-      the defaults or changing a subset of interest. Press Run Model, and note the incidence
-      and prevalence levels that each group heads towards over time. Now, try different
-      values for the starting prevalence within each group, and run the model again.  
-      Notice the impact on the values of final HIV incidence and prevalence for each group. 
-      Try again with other parameter values."))
-),
-fluidRow(
-column(width = 6,
-box(width = NULL,
-title = "Prevalence", status = "primary", solidHeader = TRUE,
-plotlyOutput("plot1"))),
-column(width = 6,
-box(width = NULL,
-title = "Incidence", status = "primary", solidHeader = TRUE,
-plotlyOutput("plot2")))
-),
-# Inputs
-fluidRow(
-column(width = 4,
-box(width = NULL,
-title = "Initial Conditions", status = "warning", solidHeader = TRUE,
-actionButton(inputId = "runMod", "Run Model"),
-numericInput(inputId = "Num.g1", label = "Population Size, Group 1",
-             min = 0, value = 1000),
-numericInput(inputId = "prevalence.g1", label = "Percent Infected, Group 1 ",
-             min = 0, max = 1, value = 0.01, step = 0.01),
-numericInput(inputId = "Num.g2", label = "Population Size, Group 2",
-             min = 0, value = 1000),
-numericInput(inputId = "prevalence.g2", label = "Percent Infected, Group 2",
-             min = 0, max = 1, value = 0.01, step = 0.01)
-),
-
-box(width = NULL,
-title = "Control Settings", status = "warning", solidHeader = TRUE,
-numericInput(inputId = "nsteps", label = "Time Steps",
-        min = 0, value = 500),
-numericInput(inputId = "dt", label = "Length of Time Step",
-        min = 0, value = 0.1)
-)
-),
-
-column(width = 4,
-box(width = NULL,
-title = "Contact and Transmission", status = "success", solidHeader = TRUE,
-sliderInput(inputId = "Q",
-       label = "Q Mixing Statistic (0 = proportional, 1 = assortative)",
-       min = 0, max = 1, value = 0, step = 0.01),
-sliderInput(inputId = "c.g1",
-       label = "Contact Rate, Group 1",
-       min = 0, max = 10, value = 2, step = 0.1),
-sliderInput(inputId = "c.g2", label = "Contact Rate, Group 2",
-             min = 0, max = 10, value = 2, step = 0.1),
-sliderInput(inputId = "rho.g1", label = "Transmission Rate, Group 1",
-             min = 0, max = 1, value = 0.05, step = 0.005),
-sliderInput(inputId = "rho.g2", label = "Transmission Rate, Group 2",
-             min = 0, max = 1, value = 0.05, step = 0.005)
-)
-),
-
-column(width = 4,
-box(width = NULL,
-title = "Demographics", status = "success", solidHeader = TRUE,
-
-sliderInput(inputId = "b.rate", label = "Birth Rate",
-      min = 0, max = 1, value = 0.03, step = 0.01),
-sliderInput(inputId = "muS.g1",
-          label = "Death Rate, Susceptible, Group 1 ",
-         min = 0, max = 1, value = 0.03, step = 0.01),
-sliderInput(inputId = "muI.g1",
-          label = "Death Rate, Infected, Group 1",
-         min = 0, max = 1, value = 0.03, step = 0.01),
-sliderInput(inputId = "muS.g2",
-          label = "Death Rate, Susceptible, Group 2",
-         min = 0, max = 1, value = 0.03, step = 0.01),
-sliderInput(inputId = "muI.g2",
-          label = "Death Rate, Infected, Group 2",
-           min = 0, max = 1, value = 0.03, step = 0.01)
-)
-)
-
-) # end fluidRow
-) # end tabItem
-) # end tabItems
-) # end dashboardBody
-)
-)
+                tabName = "DetailedInstructions",
+                fluidRow(
+                column(width = 1),
+                column(width = 10,
+                h3("Detailed Instructions", style = "color: #2E619E;", align = "Center"),
+                hr(),
+                p("Users can explore the model in different ways, but here we present a method that highlights the behavior we originally developed the tool to show."),
+                
+                p("The model contains four initial conditions (upper left panel), two control parameters (lower left panel), three parameters controlling contacts (central panel),
+                  
+                  two parameters controlling transmission (central panel), and five controlling demographics (right panel)."),
+                
+                p("Begin by examining the default parameter values and the resulting epidemic.  In this case, everything about the two groups is exactly the same 
+                  (e.g. group size, initial prevalence, death rates, transmission rates). Not surprisingly, then, the epidemic trajectory that each group takes over 
+                  time is exactly the same: they both head to an equilibrium value of 50% prevalence."),
+                
+                p("Try changing the mixing statistic to a higher value, i.e. making a higher proportion of the contacts occur between two people in the same group.
+                  No matter what value you change this to, the trajectories remain the same, since both groups have the exact same behaviors, demography and transmission rates."),
+                
+                p("Now, change the initial prevalence levels for one or both groups. (The only value you should *not* change either initial prevalence level to at 
+                  this point is 0 – choose anything else). This represents a case where there is some form of pre-existing disparity resulting from some previous 
+                  unmeasured cause.  But now the two groups are the same in every way except for standing prevalence, plus there is a tendency"),
+                
+                p("Try ramping assortative mixing all the way up to 1 – that is, the two groups are completely isolated from one another. Nevertheless, even though they 
+                  start at different levels of prevalence, they still converge.  In the presence of a pre-existing disparity, assortative mixing alone has no ability to 
+                  maintain that disparity. Although it may take a long time to fully achieve equilibrium, the incidence values in particular typically begin to move noticeably 
+                  in the direction of their equilibrium quite quickly."),
+                
+                p("Return all model parameters to their default values.  You can do this by reloading the page in your web browser. Now, try doubling the transmission rate 
+                  for Group 2 so that it equals 0.10. This represents the probability that an infected person in Group 2 will transmit to their contact. For HIV, one might 
+                  imagine this to represent a case where persons in Group 2 are less likely to be virally suppressed.  (Given that, if you want to you can also increase the 
+                  death rate for infected persons in Group 2). Observe and record the prevalence level for each group that this model heads towards."),
+                
+                p("Now, keeping everything else the same, once again change the initial prevalence levels for one or both groups.Notice that the prevalence and incidence values 
+                  that the two models head towards do not change. The trajectories that the populations take to get there have changed because the starting points have changed – 
+                  but the place they head to has not.  And once again the incidence values typically begin to move in the direction of their new equilibrium right away."),
+                
+                p("Now try changing the mixing statistic again and see there is a new equilibrium.  And again try changing the initial prevalence levels (to anything except 0) 
+                  and see that this does not change the equilibrium."),
+                
+                p("As you continue to explore, you might finally wish to change one or more initial prevalence values to 0. If you do, you may discover that there are only two 
+                  exceptions to the rule that a given set of parameters will always head to the same pair of group-specific prevalence values regardless of where prevalence begins.
+                  One is when both groups are given an initial prevalence of 0 – in this case, the epidemic can never take off at all since in our model everyone who enters the 
+                  population after the initial setup is uninfected.  The other case is when one group has an initial prevalence of 0 and the mixing parameter is at 1.  Here the 
+                  two groups are completely isolated, and the group with no infection can never see an epidemic.  Of course, in reality, when two groups co-exist within the same 
+                  larger community, they are rarely 100% percent assortative without exception.")
+                ) # End column
+                ) # End fluidRow
+            ), # End tabItem
+            
+            tabItem(
+                
+                tabName = "Discussion",
+                
+                fluidRow(
+                column(width = 1.0),
+                column(width = 10,
+                h3("Discussion", style = "color: #2E619E;", align = "Center"),
+                hr(),
+                p("We have used a relatively simple model of an infectious disease with two groups to help people build intuition around a seemingly counterintuitive fact: that, 
+                  in the presence of a pre-existing disparity in infection burden between two groups, assortative mixing between the groups on its own cannot sustain that disparity
+                  in the long term.  Although initial incidence will different between the two groups, these values begin to converge immediately, and both incidence and prevalence
+                  will eventually converge across the two groups completely."),
+                
+                p("Differences between groups such as infectiousness (perhaps because of different levels of viral suppression), or contact rates, or mortality (also because of 
+                  different levels of viral suppression) can create sustainable disparities.  And assortative mixing can accentuate the resulting disparity in these cases.  
+                  But even here, the ultimate size of the disparity does not depend on what level of disparity one begins the model at. The only exception is the very extreme 
+                  case involving initial prevalence rates of 0."),
+                
+                p("The principle that these tools demonstrate is not new.  Indeed, it was proven mathematically by Simon and Jacquez (1992) for the case of two groups, for 
+                  certain types of diseases that share many features of HIV. In doing this work, they were building on a deep literature on the mathematical theory of epidemics. 
+                  However, their proof, and many other ones throughout that literature, involve highly complex mathematics that make them inaccessible to many practitioners.  
+                  Hence our desire to demonstrate the principle using a more user-friendly tool."),
+                
+                p("We provide two caveats.  One is that in many cases it may take a long time to fully achieve equilibrium (even on the order of 100 years, far longer than the 
+                  HIV epidemic has existed). Readers who want to understand how existing disparities are being maintained might argue that, since we have only so far observed 
+                  those disparities over a few decades, that it may still be assortative mixing on its own that drives most of the continuing disparity that we see. However, 
+                  even though prevalence in models may take a long time to fully converge, the measurable convergence of incidence and prevalence levels between groups in the 
+                  direction of that equilibrium occurs immediately. Thus, if past unmeasured factors generated a racial disparity in HIV between Black and White MSM, and current 
+                  measured factors reflect any kind of change from those past unmeasured ones, we should expect to see HIV incidence and prevalence moving in the direction 
+                  sustainable by the new factors rapidly. In practice, however, this does not appear to be happening."),
+                
+                p("Our second caveat is that, in the real world, the values behind the various parameters we consider are changing all the time.  And, related to this, 
+                  each parameter represents the complex outcome of multiple phenomena, averaged across a very heterogeneous group of people.  In other words, our model 
+                  is a simplification of the real world.  This is on purpose, to help gain intuition.  None of this negates the central finding, that assortative mixing 
+                  on its own cannot sustain a pre-existing disparity."),
+                
+                p("Users may wonder how it is that their intuition about this is wrong.  To repeat one version of that intuition: if Black MSM currently have higher 
+                  HIV prevalence than White MSM, and there is high assortative mixing, then any individual HIV-negative Black MSM is more likely to have a positive 
+                  partner than any individual HIV-negative White MSM.  If the two groups are identical in every other way, then that individual HIV-negative Black MSM 
+                  should be more likely to become infected than his White counterpart.  All of this is indeed true.  However, where the intuition breaks down is in the
+                  next step, where people assume that this means higher numbers of new infections for Black MSM indefinitely.  This is because, in order to calculate new 
+                  incident cases, the probability that any individual HIV-negative person in a group becomes infected must be multiplied by the number of HIV-negative 
+                  persons in that group.  And, given the higher prevalence among Black MSM, that number is lower for them than for White MSM. Incidence is a complex 
+                  interaction of both the size of the HIV-positive population and the size of the HIV-negative population, and those two numbers must by definition 
+                  add up to 100% of the population for any group.  Our intuition tends to focus on the size of only one group or the other."),
+                
+                tags$ul(
+                    tags$li("Simon CP, Jacquez JA (1992). Reproduction Numbers and the Stability of Equilibria of SI Models for Heterogeneous Populations. SIAM Journal on Applied Mathematics, 52(2), 541-576.")
+                )
+                    ), # End column
+                column(width = 1.0)
+                ) #End fluidRow
+                ), #End tabItem
+            
+            tabItem(
+                tabName = "Equations",
+                fluidRow(
+                column(width = 1),
+                column(width = 10,
+                h3("Equations", style = "color: #2E619E;", align = "Center"),
+                hr(),
+                p("These equations below are the differential equations representing the flow of individuals in each of the four compartments:"),
+                tags$ul(
+                    tags$li("The number of susceptible individuals from group 1"),
+                    tags$li("The number of infected individuals from group 1"),
+                    tags$li("The number of susceptible individuals from group 2"),
+                    tags$li("The number of infected individuals from group 2")
+                ),
+                
+                withMathJax(),
+                tags$div(HTML("")),
+                helpText('$$\\frac{dS_{1}}{dt} = \\nu N_{1} - \\lambda_{1} S_{1} - \\mu_{S_{1}} S_{1}$$'),
+                helpText('$$\\frac{dI_{1}}{dt} = \\lambda_{1} S_{1} - \\mu_{I_{1}} I_{1}$$'),
+                helpText('$$\\frac{dS_{2}}{dt} = \\nu N_{2} - \\lambda_{2} S_{2} - \\mu_{S_{2}} S_{2}$$'),
+                helpText('$$\\frac{dI_{2}}{dt} = \\lambda_{2} S_{2} - \\mu_{I_{2}} I_{2}$$'),
+                helpText('$$N_{1} = S_{1} + I_{1}$$'),
+                helpText('$$N_{2} = S_{2} + I_{2}$$'),
+                helpText('\\(I_{j}\\) is number of people of state \\(I\\) from group \\(j\\)'), 
+                helpText('\\(\\nu\\) is the birth rate'), 
+                helpText('\\(\\lambda_{j}\\) is the force of infection for people from group \\(j\\)'),
+                helpText('\\(\\mu_{ij}\\) is the death rate for people of state \\(I\\) from group \\(j\\)'), 
+                helpText('\\(N_{i}\\) is the number of people in group \\(j\\)')
+                ), #End column
+                column(width = 1.0)
+                ) #End fluidRow
+            ), #
+            # Model Scenarios Page --------------------------------------------------------------
+            tabItem(
+                tabName = "Model",
+                
+                ## Plot windows
+                
+                fluidRow(
+                    column(width = 12),
+                    box(width = 12,
+                        title = "Quick Start", status = "primary", solidHeader = TRUE,
+                        p("Select values for all of the model input parameters, either by accepting 
+                          the defaults or changing a subset of interest. Press Run Model, and note the incidence
+                          and prevalence levels that each group heads towards over time. Now, try different
+                          values for the starting prevalence within each group, and run the model again.  
+                          Notice the impact on the values of final HIV incidence and prevalence for each group. 
+                          Try again with other parameter values."))
+                        ),
+                fluidRow(
+                    column(width = 6,
+                           box(width = NULL,
+                               title = "Prevalence", status = "primary", solidHeader = TRUE,
+                               plotlyOutput("plot1"))),
+                    column(width = 6,
+                           box(width = NULL,
+                               title = "Incidence", status = "primary", solidHeader = TRUE,
+                               plotlyOutput("plot2")))
+                ),
+                fluidRow(
+                    column(width = 4),
+                    column(width = 4, align = "Center",
+                           actionButton(inputId = "runMod", "Run Model")
+                    ),
+                    column(width = 4)
+                ),
+                hr(),
+                
+                # Inputs
+                fluidRow(
+                    column(width = 4,
+                           box(width = NULL,
+                               title = "Initial Conditions", status = "warning", solidHeader = TRUE,
+                               numericInput(inputId = "Num.g1", label = "Population Size, Group 1",
+                                            min = 0, value = 1000),
+                               numericInput(inputId = "prevalence.g1", label = "Percent Infected, Group 1 ",
+                                            min = 0, max = 1, value = 0.01, step = 0.01),
+                               numericInput(inputId = "Num.g2", label = "Population Size, Group 2",
+                                            min = 0, value = 1000),
+                               numericInput(inputId = "prevalence.g2", label = "Percent Infected, Group 2",
+                                            min = 0, max = 1, value = 0.01, step = 0.01)
+                           ),
+                           
+                           box(width = NULL,
+                               title = "Control Settings", status = "warning", solidHeader = TRUE,
+                               numericInput(inputId = "nsteps", label = "Time Steps",
+                                            min = 0, value = 500),
+                               numericInput(inputId = "dt", label = "Length of Time Step",
+                                            min = 0, value = 0.1)
+                           )
+                    ),
+                    
+                    column(width = 4,
+                           box(width = NULL,
+                               title = "Contact and Transmission", status = "success", solidHeader = TRUE,
+                               sliderInput(inputId = "Q",
+                                           label = "Q Mixing Statistic (0 = proportional, 1 = assortative)",
+                                           min = 0, max = 1, value = 0, step = 0.01),
+                               sliderInput(inputId = "c.g1",
+                                           label = "Contact Rate, Group 1",
+                                           min = 0, max = 10, value = 2, step = 0.1),
+                               sliderInput(inputId = "c.g2", label = "Contact Rate, Group 2",
+                                           min = 0, max = 10, value = 2, step = 0.1),
+                               sliderInput(inputId = "rho.g1", label = "Transmission Rate, Group 1",
+                                           min = 0, max = 1, value = 0.05, step = 0.005),
+                               sliderInput(inputId = "rho.g2", label = "Transmission Rate, Group 2",
+                                           min = 0, max = 1, value = 0.05, step = 0.005)
+                           )
+                    ),
+                    
+                    column(width = 4,
+                           box(width = NULL,
+                               title = "Demographics", status = "success", solidHeader = TRUE,
+                               
+                               sliderInput(inputId = "b.rate", label = "Birth Rate",
+                                           min = 0, max = 1, value = 0.03, step = 0.01),
+                               sliderInput(inputId = "muS.g1",
+                                           label = "Death Rate, Susceptible, Group 1 ",
+                                           min = 0, max = 1, value = 0.03, step = 0.01),
+                               sliderInput(inputId = "muI.g1",
+                                           label = "Death Rate, Infected, Group 1",
+                                           min = 0, max = 1, value = 0.03, step = 0.01),
+                               sliderInput(inputId = "muS.g2",
+                                           label = "Death Rate, Susceptible, Group 2",
+                                           min = 0, max = 1, value = 0.03, step = 0.01),
+                               sliderInput(inputId = "muI.g2",
+                                           label = "Death Rate, Infected, Group 2",
+                                           min = 0, max = 1, value = 0.03, step = 0.01)
+                           )
+                    )
+                    
+                ) # end fluidRow
+                        ) # end tabItem
+                ) # end tabItems
+                    ) # end dashboardBody
+                )
+                )
 
 
