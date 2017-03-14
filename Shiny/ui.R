@@ -229,11 +229,11 @@ actionButton(inputId = "runMod", "Run Model"),
 numericInput(inputId = "Num.g1", label = "Population Size, Group 1",
              min = 0, value = 1000),
 numericInput(inputId = "prevalence.g1", label = "Percent Infected, Group 1 ",
-             min = 0, max = 100, value = 0.1, step = 0.1),
+             min = 0, max = 1, value = 0.01, step = 0.01),
 numericInput(inputId = "Num.g2", label = "Population Size, Group 2",
              min = 0, value = 1000),
 numericInput(inputId = "prevalence.g2", label = "Percent Infected, Group 2",
-             min = 0, max = 100, value = 0.1, step = 0.1)
+             min = 0, max = 1, value = 0.01, step = 0.01)
 ),
 
 box(width = NULL,
@@ -268,19 +268,19 @@ box(width = NULL,
 title = "Demographics", status = "success", solidHeader = TRUE,
 
 sliderInput(inputId = "b.rate", label = "Birth Rate",
-      min = 0, max = 1, value = 0.1, step = 0.01),
+      min = 0, max = 1, value = 0.03, step = 0.01),
 sliderInput(inputId = "muS.g1",
           label = "Death Rate, Susceptible, Group 1 ",
-         min = 0, max = 1, value = 0.1, step = 0.01),
+         min = 0, max = 1, value = 0.03, step = 0.01),
 sliderInput(inputId = "muI.g1",
           label = "Death Rate, Infected, Group 1",
-         min = 0, max = 1, value = 0.1, step = 0.01),
+         min = 0, max = 1, value = 0.03, step = 0.01),
 sliderInput(inputId = "muS.g2",
           label = "Death Rate, Susceptible, Group 2",
-         min = 0, max = 1, value = 0.1, step = 0.01),
+         min = 0, max = 1, value = 0.03, step = 0.01),
 sliderInput(inputId = "muI.g2",
           label = "Death Rate, Infected, Group 2",
-           min = 0, max = 1, value = 0.1, step = 0.01)
+           min = 0, max = 1, value = 0.03, step = 0.01)
 )
 )
 
