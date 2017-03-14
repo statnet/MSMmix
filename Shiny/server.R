@@ -30,8 +30,8 @@ shinyServer(function(input, output) {
                  I.g1 = I.g1,
                  S.g2 = S.g2,
                  I.g2 = I.g2,
-                 incid.g1 = 0,
-                 incid.g2 = 0)
+                 incid.g1.flow = 0,
+                 incid.g2.flow = 0)
     })
 
     control <- reactive({
@@ -58,9 +58,9 @@ shinyServer(function(input, output) {
     })
     output$plot2 <- renderPlotly({
         df <- as.data.frame(mod())
-        p2 <- plot_ly(df, x = ~time, y = ~incid.g1, name = "Group 1", type = 'scatter', mode = 'lines', 
+        p2 <- plot_ly(df, x = ~time, y = ~incid.g1.flow, name = "Group 1", type = 'scatter', mode = 'lines', 
                       line = list(width = 2)) %>%
-            add_trace(y = ~incid.g2, name = 'Group 2', mode = 'lines', line = list(dash = "dash", width = 2)) %>%
+            add_trace(y = ~incid.g2.flow, name = 'Group 2', mode = 'lines', line = list(dash = "dash", width = 2)) %>%
             layout(xaxis = list(title = "Time"),
                    yaxis = list(title = "Incidence"))
         p2

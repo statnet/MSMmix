@@ -31,8 +31,8 @@ Qmod <- function(t, t0, parms) {
         ## Output ##
         list(c(dS.g1, dI.g1,
                dS.g2, dI.g2,
-               incid.g1 = lambda.g1*S.g1,
-               incid.g2 = lambda.g2*S.g2),
+               incid.g1.flow = lambda.g1,
+               incid.g2.flow = lambda.g2),
              N = N,
              prev = prev,
              prev.g1 = prev.g1,
