@@ -13,12 +13,12 @@ shinyUI(dashboardPage(
         width = 180,
         sidebarMenu(
             menuItem("Introduction", tabName = "Introduction", icon = icon("book")),
+            menuItem("Model", tabName = "Model", icon = icon("line-chart")),
             menuItem("Context", tabName = "Context", icon = icon("book")),
             menuItem("Model Structure", tabName = "ModelStructure", icon = icon("book")),
             menuItem("Detailed Instructions", tabName = "DetailedInstructions", icon = icon("book")),
             menuItem("Discussion", tabName = "Discussion", icon = icon("book")),
-            menuItem("Equations", tabName = "Equations", icon = icon("cog")),
-            menuItem("Model Scenarios", tabName = "Model", icon = icon("line-chart"))
+            menuItem("Equations", tabName = "Equations", icon = icon("cog"))
         )
     ),
     
@@ -44,9 +44,10 @@ shinyUI(dashboardPage(
                                  a disparity when none exists. Examples of the kinds of phenomena we mean are differences in care access 
                                  (and thus in infectiousness per contact and/or mortality rates), differences in contact rates, differences 
                                  in access to and use of prevention modalities like condoms (and thus in effective contact rates), and 
-                                 assortative mixing between the two groups. Before exploring scenarios, readers are encouraged to review 
-                                 the", strong("Context,"), strong("Model Structure"), "and", strong("Detailed Instructions"), "tabs. See also the", strong("Discussion"), 
-                                 "tab after exploring the app.")),
+                                 assortative mixing between the two groups. If you are a returning user, you may wish to turn straight to the", 
+                                 strong("Model."), "If you are new, we encourage you to first review the", strong("Context,"), strong("Model Structure,"), 
+                                 "and", strong("Detailed Instructions"), "tabs. See also the", strong("Discussion"),"tab after exploring the app. 
+                                 For those interested in the mathematical detail underlying the model, you may also visit the", strong("Equations"), "tab.")),
                         column(width = 1)
                     )
                         ), #End tabItem
@@ -154,29 +155,31 @@ shinyUI(dashboardPage(
                 p("Users can explore the model in different ways, but here we present a method that highlights the behavior we originally developed the tool to show."),
                 
                 p("The model contains four initial conditions (upper left panel), two control parameters (lower left panel), three parameters controlling contacts (central panel),
-                  
                   two parameters controlling transmission (central panel), and five controlling demographics (right panel)."),
                 
                 p("Begin by examining the default parameter values and the resulting epidemic.  In this case, everything about the two groups is exactly the same 
                   (e.g. group size, initial prevalence, death rates, transmission rates). Not surprisingly, then, the epidemic trajectory that each group takes over 
-                  time is exactly the same: they both head to an equilibrium value of 50% prevalence."),
+                  time is exactly the same: they both head to an equilibrium value of 70% prevalence."),
                 
                 p("Try changing the mixing statistic to a higher value, i.e. making a higher proportion of the contacts occur between two people in the same group.
                   No matter what value you change this to, the trajectories remain the same, since both groups have the exact same behaviors, demography and transmission rates."),
                 
                 p("Now, change the initial prevalence levels for one or both groups. (The only value you should *not* change either initial prevalence level to at 
-                  this point is 0 – choose anything else). This represents a case where there is some form of pre-existing disparity resulting from some previous 
-                  unmeasured cause.  But now the two groups are the same in every way except for standing prevalence, plus there is a tendency"),
+                  this point is 0 – choose anything else up to 1, meaning 100%). This represents a case where there is some form of pre-existing disparity resulting from some previous 
+                  unmeasured cause.  But now the two groups are the same in every way except for standing prevalence, plus there is a tendency for assortative mixing. Note that 
+                  the model still returns to equal disease burden. Incidence begins to converge noticeably right away, and prevalence eventually becomes equal for the two groups."),
                 
-                p("Try ramping assortative mixing all the way up to 1 – that is, the two groups are completely isolated from one another. Nevertheless, even though they 
-                  start at different levels of prevalence, they still converge.  In the presence of a pre-existing disparity, assortative mixing alone has no ability to 
+                p("Try ramping assortative mixing all the way up to 1 – that is, the two groups are fully assortative and thus completely isolated from one another. Nevertheless, 
+                  even though they start at different levels of prevalence, they still converge.  In the presence of a pre-existing disparity, assortative mixing alone has no ability to 
                   maintain that disparity. Although it may take a long time to fully achieve equilibrium, the incidence values in particular typically begin to move noticeably 
                   in the direction of their equilibrium quite quickly."),
                 
                 p("Return all model parameters to their default values.  You can do this by reloading the page in your web browser. Now, try doubling the transmission rate 
                   for Group 2 so that it equals 0.10. This represents the probability that an infected person in Group 2 will transmit to their contact. For HIV, one might 
                   imagine this to represent a case where persons in Group 2 are less likely to be virally suppressed.  (Given that, if you want to you can also increase the 
-                  death rate for infected persons in Group 2). Observe and record the prevalence level for each group that this model heads towards."),
+                  death rate for infected persons in Group 2). Observe and record the prevalence level for each group that this model heads towards. You will notice there is 
+                  still no difference by group; although Group 2 transmits more easily, the lack of assortative mixing means that their partners are qually likely to be from 
+                  either group. But now try adding in assortative mixing, and see what happens. Note these equilbrium prevalence and incidence values."),
                 
                 p("Now, keeping everything else the same, once again change the initial prevalence levels for one or both groups.Notice that the prevalence and incidence values 
                   that the two models head towards do not change. The trajectories that the populations take to get there have changed because the starting points have changed – 
@@ -191,6 +194,7 @@ shinyUI(dashboardPage(
                   population after the initial setup is uninfected.  The other case is when one group has an initial prevalence of 0 and the mixing parameter is at 1.  Here the 
                   two groups are completely isolated, and the group with no infection can never see an epidemic.  Of course, in reality, when two groups co-exist within the same 
                   larger community, they are rarely 100% percent assortative without exception.")
+                
                 ) # End column
                 ) # End fluidRow
             ), # End tabItem
@@ -310,11 +314,9 @@ shinyUI(dashboardPage(
                                plotlyOutput("plot2")))
                 ),
                 fluidRow(
-                    column(width = 4),
-                    column(width = 4, align = "Center",
+                    column(width = 12, align = "Center",
                            actionButton(inputId = "runMod", "Run Model")
-                    ),
-                    column(width = 4)
+                    )
                 ),
                 hr(),
                 
@@ -325,11 +327,11 @@ shinyUI(dashboardPage(
                                title = "Initial Conditions", status = "warning", solidHeader = TRUE,
                                numericInput(inputId = "Num.g1", label = "Population Size, Group 1",
                                             min = 0, value = 1000),
-                               numericInput(inputId = "prevalence.g1", label = "Percent Infected, Group 1 ",
+                               numericInput(inputId = "prevalence.g1", label = "Proportion Infected, Group 1 ",
                                             min = 0, max = 1, value = 0.01, step = 0.01),
                                numericInput(inputId = "Num.g2", label = "Population Size, Group 2",
                                             min = 0, value = 1000),
-                               numericInput(inputId = "prevalence.g2", label = "Percent Infected, Group 2",
+                               numericInput(inputId = "prevalence.g2", label = "Propotion Infected, Group 2",
                                             min = 0, max = 1, value = 0.01, step = 0.01)
                            ),
                            
@@ -346,7 +348,7 @@ shinyUI(dashboardPage(
                            box(width = NULL,
                                title = "Contact and Transmission", status = "success", solidHeader = TRUE,
                                sliderInput(inputId = "Q",
-                                           label = "Q Mixing Statistic (0 = proportional, 1 = assortative)",
+                                           label = "Q Mixing Statistic (0 = proportional, 1 = fully assortative)",
                                            min = 0, max = 1, value = 0, step = 0.01),
                                sliderInput(inputId = "c.g1",
                                            label = "Contact Rate, Group 1",
