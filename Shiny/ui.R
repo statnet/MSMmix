@@ -48,7 +48,7 @@ shinyUI(dashboardPage(
                                  assortative mixing between the two groups. If you are a returning user, you may wish to turn straight to the", 
                                  strong("Model."), "If you are new, we encourage you to first review the", strong("Context,"), strong("Model Structure,"), 
                                  "and", strong("Detailed Instructions"), "tabs. See also the", strong("Discussion"),"tab after exploring the app. 
-                                 For those interested in the mathematical detail underlying the model, you may also visit the", strong("Equations"), "The 
+                                 For those interested in the mathematical detail underlying the model, you may also visit the", strong("Equations"), "tab. The 
                                  code used to generate this app is located in a GitHub repository called", 
                                  tags$a("MSMMix", target = "_blank", href = "https://github.com/statnet/MSMmix"), ".")),
                         column(width = 1)
