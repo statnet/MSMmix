@@ -395,13 +395,13 @@ shinyUI(dashboardPage(
                                h3("License and Attribution", style = "color: #2E619E;", align = "Center"),
                                hr(),
                                h3("License"),
-                               tags$blockquote("Copyright 2017, Kevin M. Weiss, Maraia Tremarelli, Samuel M. Jenness and Steven M. Goodreau. 
+                               tags$blockquote("Copyright 2017, Kevin M. Weiss, Maraia R.Tremarelli, Samuel M. Jenness and Steven M. Goodreau. 
                                                This website and source code are distributed under the terms of the", 
                                                tags$a("GPL-3", target = "_blank", href = "https://www.gnu.org/licenses/gpl-3.0.en.html"), 
                                                "license."),
                                hr(),
                                h3("Citation"),
-                               tags$blockquote("Weiss KM, Tremarelli M, Jenness SM, and Goodreau SM 2017. Impact of Assortative Mixing on 
+                               tags$blockquote("Weiss KM, Tremarelli MR, Jenness SM, and Goodreau SM 2017. Impact of Assortative Mixing on 
                                                HIV Prevalence and Incidence among MSM: A Web-Based Modeling Tool for Public Health Practice.", 
                                                tags$a("https://prism.shinyapps.io/mixing/", target = "_blank", href = "https://prism.shinyapps.io/mixing/"))
                         ), # end column
