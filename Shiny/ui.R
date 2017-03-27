@@ -77,7 +77,7 @@ shinyUI(dashboardPage(
                            
                                tags$li("That is, if we know that a given disparity between groups in some causal factor (e.g. sexual behavior, care continuum)", 
                                     strong("generates"), "a given disparity in HIV incidence or prevalence, what does that tell us about the ability for that 
-                                    same causal factor to sustain a pre-existing disparity in incidence and prevalence over time?"), 
+                                    same causal factor to", strong("sustain"), "a pre-existing disparity in incidence and prevalence over time?"), 
                            
                                tags$li("Epidemic modeling theory makes predictions about this relationship that, in our experience, many people find counter-intuitive."),
                            
@@ -185,7 +185,7 @@ shinyUI(dashboardPage(
                                
                                tags$li("Types of people"),
                                 
-                                    tags$ol(        
+                                    tags$ul(        
                                         tags$li("The model simulates a population comprising two groups, named Group 1 and Group 2."),
                                
                                         tags$li("In addition to their group identity, individuals in the population are also distinguished 
@@ -200,7 +200,7 @@ shinyUI(dashboardPage(
         
                                tags$li("Arrivals and departures"),
                                 
-                                    tags$ol(
+                                    tags$ul(
                            
                                         tags$li("Over time, people enter the population (“birth”) and leave the population (“death”). 
                                                 One can also think of these are in- and out-migration if one wishes."),
@@ -215,13 +215,13 @@ shinyUI(dashboardPage(
                                
                                tags$li("Contacts"),
                                
-                                    tags$ol(
+                                    tags$ul(
                                         
                                         tags$li("Members of the population come into contact with one another. Since this is a simplified HIV model, contact represents a sexual act."),
                                
                                         tags$li("This process of forming contacts is shaped by three parameters:"),
                                         
-                                            tags$ol(
+                                            tags$ul(
                                
                                                     tags$li("one determining the Group 1 rate, which determines how many contacts people in Group 1 have overall, regardless of who the contacts are with"),
                                
@@ -238,7 +238,7 @@ shinyUI(dashboardPage(
                                
                                tags$li("Transmission"),
                                
-                                    tags$ol(
+                                    tags$ul(
                                         tags$li("If a contact involves a discordant pair (one susceptible, one infected), then a transmission may occur."),
                                
                                         tags$li("The probability of transmission depends on the group membership of the infected partner."),
